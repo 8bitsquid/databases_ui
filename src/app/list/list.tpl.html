@@ -1,0 +1,143 @@
+<div ng-show="dbList.searchText.length > 0">
+    <h3>Searched for: {{dbList.searchText}}, found {{filteredDB.length}} results</h3>
+    <div class="text-center row form-inline">
+        <div class="col-md-12 form-group text-left">
+            <label for="filterBy">Filter by</label>
+            <div id="filterBy">
+                <input type="text" class="form-control" placeholder="Title" ng-model="dbList.titleFilter">
+                <input type="text" class="form-control" placeholder="Description" ng-model="dbList.descrFilter">
+                <input type="text" class="form-control" placeholder="Subject" ng-model="dbList.subjectFilter">
+                <input type="text" class="form-control" placeholder="Media Type" ng-model="dbList.typeFilter">
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <pagination total-items="filteredDB.length" ng-model="currentPage" max-size="maxPageSize" class="pagination-sm"
+                    boundary-links="true" rotate="false" items-per-page="perPage"></pagination>
+    </div>
+    <div class="row"
+         ng-repeat="db in filteredDB = (dbList.databases | filter:{filterBy:dbList.searchText}:compareTitle
+                                                         | filter:{title:dbList.titleFilter}:compareTitle
+                                                         | filter:{description:dbList.descrFilter}:compareTitle
+                                                         | filter:{subjects:dbList.subjectFilter}:compareTitle
+                                                         | filter:{types:dbList.typeFilter}:compareTitle)
+        | startFrom:(currentPage-1)*perPage | limitTo:perPage"
+         ng-class="{sdOpen: db.show, sdOver: db.id == mOver}" ng-mouseover="setOver(db)">
+        <div class="col-md-12" ng-click="toggleDB(db)">
+            <h4>
+                <span class="fa fa-fw fa-caret-right" ng-hide="db.show"></span>
+                <span class="fa fa-fw fa-caret-down" ng-show="db.show"></span>
+                <a href="{{db.url}}">{{db.title}}</a>
+                <small>{{db.publisher}} <span ng-show="db.vendor.length > 0">: {{db.vendor}}</span></small>
+            </h4>
+        </div>
+        <div class="col-md-12" ng-show="db.show">
+            <div class="col-md-6 form-group">
+                <label for="{{db.id}}_title">Title</label>
+                <input type="text" class="form-control" placeholder="{{db.title}}" ng-model="db.title"
+                       id="{{db.id}}_title">
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="{{db.id}}_Publisher">Publisher</label>
+                <input type="text" class="form-control" placeholder="{{db.publisher}}" ng-model="db.publisher"
+                       id="{{db.id}}_Publisher">
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="{{db.id}}_Vendor">Vendor</label>
+                <input type="text" class="form-control" placeholder="{{db.vendor}}" ng-model="db.vendor"
+                       id="{{db.id}}_Vendor">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="{{db.id}}_URL">URL</label>
+                <input type="text" class="form-control" placeholder="{{db.url}}" ng-model="db.url"
+                       id="{{db.id}}_URL">
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="{{db.id}}_Location">Location</label>
+                <input type="text" class="form-control" placeholder="{{db.location}}" ng-model="db.location"
+                       id="{{db.id}}_Location">
+            </div>
+            <div class="col-md-1 form-group">
+                <label for="{{db.id}}_NotInEDS">Not in EDS</label>
+                <input type="text" class="form-control" placeholder="{{db.notInEDS}}" ng-model="db.notInEDS"
+                       id="{{db.id}}_NotInEDS">
+            </div>
+            <div class="col-md-1 form-group">
+                <label for="{{db.id}}_Full-text">Fulltext</label>
+                <input type="text" class="form-control" placeholder="{{db.hasFullText}}" ng-model="db.hasFullText"
+                       id="{{db.id}}_Full-text">
+            </div>
+            <div class="col-md-1 form-group">
+                <label for="{{db.id}}_Authenticate">Authenticate</label>
+                <input type="checkbox" class="form-control" ng-model="db.auth" ng-true-value="'1'" ng-false-value="'0'"
+                       id="{{db.id}}_Authenticate">
+            </div>
+            <div class="col-md-1 form-group">
+                <label for="{{db.id}}_Disable">Disabled</label>
+                <input type="checkbox" class="form-control" ng-model="db.disabled" ng-true-value="'1'" ng-false-value="'0'"
+                       id="{{db.id}}_Disable">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="{{db.id}}_Coverage">Coverage</label>
+                <input type="text" class="form-control" placeholder="{{db.coverage}}" ng-model="db.coverage"
+                       id="{{db.id}}_Coverage">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="{{db.id}}_Notes">Notes</label>
+                <input type="text" class="form-control" placeholder="{{db.notes}}" ng-model="db.notes"
+                       id="{{db.id}}_Notes">
+            </div>
+            <div class="col-md-12 form-group">
+                <label for="{{db.id}}_descr">Database Description</label>
+                <textarea class="form-control" rows="3" id="{{db.id}}_descr" ng-model="db.description"></textarea>
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="{{db.id}}_presented">Presented by</label>
+                <input type="text" class="form-control" placeholder="{{db.presentedBy}}" ng-model="db.presentedBy"
+                       id="{{db.id}}_presented">
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="{{db.id}}_Audience1">Audience One</label>
+                <input type="text" class="form-control" placeholder="{{db.audience1}}" ng-model="db.audience1"
+                       id="{{db.id}}_Audience1">
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="{{db.id}}_Audience2">Audience Two</label>
+                <input type="text" class="form-control" placeholder="{{db.audience2}}" ng-model="db.audience2"
+                       id="{{db.id}}_Audience2">
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="{{db.id}}_dAuthor">Description Author</label>
+                <p id="{{db.id}}_dAuthor">{{db.descrAuthor}}</p>
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="{{db.id}}_date">Last Modified</label>
+                <p id="{{db.id}}_date">{{db.lastModified}}</p>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-6 form-group">
+                    <label for="{{db.id}}_subjects">Subjects</label>
+                    <ul class="list-group" id="{{db.id}}_subjects">
+                        <li class="list-group-item" ng-repeat="subject in db.subjects">
+                            {{subject.subject}} : {{subject.type}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="{{db.id}}_types">Types</label>
+                    <ul class="list-group" id="{{db.id}}_types">
+                        <li class="list-group-item" ng-repeat="type in db.types">
+                            {{type.type}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <pagination total-items="filteredDB.length" ng-model="currentPage" max-size="maxPageSize" class="pagination-sm"
+                    boundary-links="true" rotate="false" items-per-page="perPage"></pagination>
+    </div>
+</div>
+
