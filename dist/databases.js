@@ -66,7 +66,7 @@ angular.module('databases.list', [])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/databases/:s?/title/:t?/descr/:d?/fs/:fs?/ft/:ft?', {
-                templateUrl: 'list/listMain.tpl.html',
+                templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
     }])
@@ -132,7 +132,7 @@ angular.module('databases.list', [])
             controller: 'dbListCtrl',
             link: function(scope, elm, attrs){
             },
-            templateUrl: 'list/list.tpl.html'
+            templateUrl: 'dbList/dbList.tpl.html'
         }
     }])
     .filter('startFrom', function() {

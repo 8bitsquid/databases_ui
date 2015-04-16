@@ -1,7 +1,7 @@
-angular.module('databases.templates', ['list/list.tpl.html', 'list/listMain.tpl.html']);
+angular.module('databases.templates', ['dbList/dbList.tpl.html', 'dbList/dbListMain.tpl.html']);
 
-angular.module("list/list.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("list/list.tpl.html",
+angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("dbList/dbList.tpl.html",
     "<div ng-show=\"dbList.searchText.length > 0\">\n" +
     "    <h3>Searched for: {{dbList.searchText}}, found {{filteredDB.length}} results</h3>\n" +
     "    <div class=\"text-center row form-inline\">\n" +
@@ -148,8 +148,8 @@ angular.module("list/list.tpl.html", []).run(["$templateCache", function($templa
     "");
 }]);
 
-angular.module("list/listMain.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("list/listMain.tpl.html",
+angular.module("dbList/dbListMain.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("dbList/dbListMain.tpl.html",
     "<h2>Search Databases</h2>\n" +
     "\n" +
     "<form ng-submit=\"search()\">\n" +
