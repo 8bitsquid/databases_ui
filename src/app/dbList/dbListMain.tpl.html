@@ -2,12 +2,13 @@
 
 <form ng-submit="search()">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-4">
             <input type="text" class="form-control" placeholder="Search Databases" ng-model="dbList.searchText">
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary">
-                Search
+                <span ng-show="dbList.searchText.length == 0">Search</span>
+                <span ng-hide="dbList.searchText.length == 0">Update URL</span>
             </button>
         </div>
     </div>

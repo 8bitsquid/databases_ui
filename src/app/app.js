@@ -21,6 +21,7 @@ angular.module('databases', [
         $scope.dbList = {};
         $scope.dbList.searchText = '';
         $scope.dbList.titleFilter = '';
+        $scope.dbList.titleStartFilter = '';
         $scope.dbList.descrFilter = '';
         $scope.dbList.subjectFilter = '';
         $scope.dbList.typeFilter = '';
@@ -38,6 +39,8 @@ angular.module('databases', [
                     $scope.dbList.searchText = $routeParams.s;
                 if (typeof $routeParams.t !== 'undefined')
                     $scope.dbList.titleFilter = $routeParams.t;
+                if (typeof $routeParams.ts !== 'undefined')
+                    $scope.dbList.titleStartFilter = $routeParams.ts;
                 if (typeof $routeParams.d !== 'undefined')
                     $scope.dbList.descrFilter = $routeParams.d;
                 if (typeof $routeParams.fs !== 'undefined')

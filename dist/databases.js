@@ -21,6 +21,7 @@ angular.module('databases', [
         $scope.dbList = {};
         $scope.dbList.searchText = '';
         $scope.dbList.titleFilter = '';
+        $scope.dbList.titleStartFilter = '';
         $scope.dbList.descrFilter = '';
         $scope.dbList.subjectFilter = '';
         $scope.dbList.typeFilter = '';
@@ -38,6 +39,8 @@ angular.module('databases', [
                     $scope.dbList.searchText = $routeParams.s;
                 if (typeof $routeParams.t !== 'undefined')
                     $scope.dbList.titleFilter = $routeParams.t;
+                if (typeof $routeParams.ts !== 'undefined')
+                    $scope.dbList.titleStartFilter = $routeParams.ts;
                 if (typeof $routeParams.d !== 'undefined')
                     $scope.dbList.descrFilter = $routeParams.d;
                 if (typeof $routeParams.fs !== 'undefined')
@@ -74,7 +77,7 @@ angular.module('common.databases', [])
 angular.module('databases.list', [])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
-            .when('/databases/:s?/title/:t?/descr/:d?/fs/:fs?/ft/:ft?', {
+            .when('/databases/:s?/title/:t?/ts/:ts?/descr/:d?/fs/:fs?/ft/:ft?', {
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
@@ -88,6 +91,9 @@ angular.module('databases.list', [])
                     newPath += '/title/';
                     if ($scope.dbList.titleFilter)
                         newPath = newPath + $scope.dbList.titleFilter + '/';
+                    newPath += 'ts/';
+                    if ($scope.dbList.titleStartFilter)
+                        newPath = newPath + $scope.dbList.titleStartFilter + '/';
                     newPath += 'descr/';
                     if ($scope.dbList.descrFilter)
                         newPath = newPath + $scope.dbList.descrFilter + '/';
@@ -106,6 +112,8 @@ angular.module('databases.list', [])
                     $scope.dbList.searchText = currentRoute.params.s;
                 if (typeof currentRoute.params.t !== 'undefined')
                     $scope.dbList.titleFilter = currentRoute.params.t;
+                if (typeof currentRoute.params.ts !== 'undefined')
+                    $scope.dbList.titleStartFilter = currentRoute.params.ts;
                 if (typeof currentRoute.params.d !== 'undefined')
                     $scope.dbList.descrFilter = currentRoute.params.d;
                 if (typeof currentRoute.params.fs !== 'undefined')
@@ -125,6 +133,13 @@ angular.module('databases.list', [])
             if (!expected)
                 return true;
             if (actual.toLowerCase().indexOf(expected.toLowerCase()) > -1)
+                return true;
+            return false;
+        };
+        $scope.startTitle = function(actual, expected){
+            if (!expected)
+                return true;
+            if (actual.toLowerCase().indexOf(expected.toLowerCase()) == 0)
                 return true;
             return false;
         };
