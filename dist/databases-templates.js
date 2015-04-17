@@ -1,4 +1,9 @@
-angular.module('databases.templates', ['dbList/dbList.tpl.html', 'dbList/dbListMain.tpl.html']);
+angular.module('databases.templates', ['dbList/databasesMain.tpl.html', 'dbList/dbList.tpl.html', 'dbList/dbListMain.tpl.html']);
+
+angular.module("dbList/databasesMain.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("dbList/databasesMain.tpl.html",
+    "<div ng-view></div>");
+}]);
 
 angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("dbList/dbList.tpl.html",

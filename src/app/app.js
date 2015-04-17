@@ -51,6 +51,15 @@ angular.module('databases', [
             });
 
     }])
+    .directive('databasesMain', [function databasesMain(){
+        return {
+            restrict: 'A',
+            controller: 'mainDatabasesCtrl',
+            link: function(scope, elm, attrs){
+            },
+            templateUrl: 'dbList/databasesMain.tpl.html'
+        }
+    }])
 
 
 
