@@ -8,6 +8,7 @@ angular.module('databases', [
 ])
 
     .constant('DATABASES_API_URL', '//wwwdev2.lib.ua.edu/databases/api/')
+    .constant('PROXY_PREPEND_URL', 'http://libdata.lib.ua.edu/login?url=')
 
     .factory('dbFactory', ['$http', 'DATABASES_API_URL', function dbFactory($http, url){
         return {
@@ -17,7 +18,8 @@ angular.module('databases', [
         }
     }])
 
-    .controller('mainDatabasesCtrl', ['$scope', '$routeParams', 'dbFactory', function($scope, $routeParams, dbFactory){
+    .controller('mainDatabasesCtrl', ['$scope', '$routeParams', 'dbFactory', 'PROXY_PREPEND_URL',
+    function($scope, $routeParams, dbFactory, proxyURL){
         $scope.dbList = {};
         $scope.dbList.searchText = '';
         $scope.dbList.titleFilter = '';
@@ -29,10 +31,31 @@ angular.module('databases', [
         //need to load all databases only once
         dbFactory.getData("all")
             .success(function(data){
+                for (var i = 0; i < data.subjects.length; i++){
+                    data.subjects[i].selected = false;
+                }
+                for (var i = 0; i < data.types.length; i++){
+                    data.types[i].selected = true;
+                }
                 for (var i = 0; i < data.databases.length; i++){
                     data.databases[i].show = false;
+                    data.databases[i].primary = true;
                     data.databases[i].class = "";
                     data.databases[i].filterBy = data.databases[i].title + data.databases[i].description;
+                    if (data.databases[i].auth == '1')
+                        data.databases[i].url = proxyURL + data.databases[i].url;
+                    for (var j = 0; j < data.databases[i].subjects.length; j++)
+                        for (var k = 0; k < data.subjects.length; k++)
+                            if (data.databases[i].subjects[j].sid === data.subjects[k].sid){
+                                data.databases[i].subjects[j].index = k;
+                                break;
+                            }
+                    for (var j = 0; j < data.databases[i].types.length; j++)
+                        for (var k = 0; k < data.types.length; k++)
+                            if (data.databases[i].types[j].tid === data.types[k].tid){
+                                data.databases[i].types[j].index = k;
+                                break;
+                            }
                 }
                 $scope.dbList = data;
                 if (typeof $routeParams.s !== 'undefined')

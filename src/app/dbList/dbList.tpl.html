@@ -1,4 +1,4 @@
-<div class="text-center row form-inline">
+<div class="row form-inline">
     <div class="col-md-12 form-group text-left">
         <label for="filterBy">Filter <small>{{filteredDB.length}}</small> results by</label>
         <div id="filterBy">
@@ -7,6 +7,45 @@
             <input type="text" class="form-control" placeholder="Description contains" ng-model="dbList.descrFilter">
             <input type="text" class="form-control" placeholder="Subjects contain" ng-model="dbList.subjectFilter">
             <input type="text" class="form-control" placeholder="Media Types contain" ng-model="dbList.typeFilter">
+        </div>
+    </div>
+    <div class="cold-md-12 form-group">
+        <label for="selectST" ng-click="subTypSelOpen = !subTypSelOpen">
+            <a>
+                <span class="fa fa-fw fa-caret-right" ng-hide="subTypSelOpen"></span>
+                <span class="fa fa-fw fa-caret-down" ng-show="subTypSelOpen"></span>
+                Select Subjects and Media Types
+            </a>
+        </label>
+        <div id="selectST" ng-show="subTypSelOpen">
+            <div class="col-md-8">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" ng-click="selectAllSubjects(true)">
+                        Select All Subjects
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="selectAllSubjects(false)">
+                        Deselect All Subjects
+                    </button>
+                </div>
+                <label class="btn btn-default" btn-checkbox ng-repeat="subject in dbList.subjects"
+                        ng-model="subject.selected" ng-click="updateStatus($index)">
+                    {{subject.subject}}
+                </label>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" ng-click="selectAllTypes(true)">
+                        Select All Types
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="selectAllTypes(false)">
+                        Deselect All Types
+                    </button>
+                </div>
+                <label class="btn btn-default" btn-checkbox ng-repeat="type in dbList.types"
+                        ng-model="type.selected">
+                    {{type.type}}
+                </label>
+            </div>
         </div>
     </div>
 </div>
@@ -23,37 +62,36 @@
                                                      | filter:{subjects:dbList.subjectFilter}:compareTitle
                                                      | filter:{types:dbList.typeFilter}:compareTitle
                                                      | filter:{disabled:0}
-                                                     | orderBy:'title')
+                                                     | filter:{subjects:dbList.subjects}:filterPrimarySubjects
+                                                     | filter:{types:dbList.types}:filterTypes
+                                                     | orderBy:['-primary','title'])
     | startFrom:(currentPage-1)*perPage | limitTo:perPage"
      ng-class="{sdOpen: db.show, sdOver: db.id == mOver}" ng-mouseover="setOver(db)">
     <div class="col-md-12" ng-click="toggleDB(db)">
-        <h4>
-            <span class="fa fa-fw fa-caret-right" ng-hide="db.show"></span>
-            <span class="fa fa-fw fa-caret-down" ng-show="db.show"></span>
-            <a href="{{db.url}}">{{db.title}}</a>
-            <small>{{db.publisher}} <span ng-show="db.vendor.length > 0">: {{db.vendor}}</span></small>
-        </h4>
+        <div class="col-md-10">
+            <h4>
+                <span class="fa fa-fw fa-caret-right" ng-hide="db.show"></span>
+                <span class="fa fa-fw fa-caret-down" ng-show="db.show"></span>
+                <a href="{{db.url}}" ng-hide="db.tmpDisabled == '1'">{{db.title}}</a>
+                <span ng-show="db.tmpDisabled == '1'">{{db.title}}</span>
+                <small>{{db.coverage}}</small>
+            </h4>
+        </div>
+        <div class="col-md-2 text-right">
+            <small ng-show="db.primary && !noSubjSelected">RECOMMENDED</small>
+        </div>
+        <div class="col-md-12">
+            <p ng-bind-html="db.description"></p>
+        </div>
     </div>
     <div class="col-md-12" ng-show="db.show">
-        <div class="col-md-12 form-group">
-            <label for="{{db.id}}_descr">Database Description</label>
-            <p id="{{db.id}}_descr">{{db.description}}</p>
-        </div>
-        <div class="col-md-3 form-group" ng-show="db.coverage">
-            <label for="{{db.id}}_Coverage">Coverage</label>
-            <p id="{{db.id}}_Coverage">{{db.coverage}}</p>
-        </div>
-        <div class="col-md-3 form-group" ng-show="db.publisher">
+        <div class="col-md-2 form-group" ng-show="db.publisher">
             <label for="{{db.id}}_Publisher">Publisher</label>
             <p id="{{db.id}}_Publisher">{{db.publisher}}</p>
         </div>
-        <div class="col-md-3 form-group" ng-show="db.vendor">
+        <div class="col-md-2 form-group" ng-show="db.vendor">
             <label for="{{db.id}}_Vendor">Vendor</label>
             <p id="{{db.id}}_Vendor">{{db.vendor}}</p>
-        </div>
-        <div class="col-md-3 form-group" ng-show="db.notes">
-            <label for="{{db.id}}_Notes">Notes</label>
-            <p id="{{db.id}}_Notes">{{db.notes}}</p>
         </div>
         <div class="col-md-2 form-group" ng-show="db.location">
             <label for="{{db.id}}_Location">Location</label>
@@ -67,11 +105,6 @@
             <label for="{{db.id}}_Full-text">Fulltext</label>
             <p id="{{db.id}}_Full-text">{{db.hasFullText}}<span ng-hide="db.hasFullText">No</span></p>
         </div>
-        <div class="col-md-2 form-group">
-            <label for="{{db.id}}_Authenticate">Authenticate</label>
-            <input type="checkbox" class="form-control" ng-model="db.auth" ng-true-value="'1'" ng-false-value="'0'"
-                   id="{{db.id}}_Authenticate" disabled>
-        </div>
         <div class="col-md-2 form-group" ng-show="db.presentedBy">
             <label for="{{db.id}}_presented">Presented by</label>
             <p id="{{db.id}}_presented">{{db.presentedBy}}</p>
@@ -80,25 +113,25 @@
             <label for="{{db.id}}_Audience1">Audience</label>
             <p id="{{db.id}}_Audience1">{{db.audience1}} <span ng-show="db.audience2">, {{db.audience2}}</span></p>
         </div>
-        <div class="col-md-2 form-group" ng-show="db.descrAuthor">
-            <label for="{{db.id}}_dAuthor">Description Author</label>
-            <p id="{{db.id}}_dAuthor">{{db.descrAuthor}}</p>
-        </div>
-        <div class="col-md-2 form-group" ng-show="db.lastModified">
-            <label for="{{db.id}}_date">Last Modified</label>
-            <p id="{{db.id}}_date">{{db.lastModified}}</p>
-        </div>
         <div class="col-md-12">
-            <div class="col-md-6 form-group">
-                <label for="{{db.id}}_subjects">Subjects</label>
-                <ul class="list-group" id="{{db.id}}_subjects">
-                    <li class="list-group-item" ng-repeat="subject in db.subjects">
-                        {{subject.subject}} : {{subject.type}}
+            <div class="col-md-4 form-group" ng-show="primarySubjects.length > 0">
+                <label for="{{db.id}}_subjectsP">Primary Subjects</label>
+                <ul class="list-group" id="{{db.id}}_subjectsP">
+                    <li class="list-group-item" ng-repeat="subject in primarySubjects = (db.subjects | filter:{type:'1'})">
+                        {{subject.subject}}
                     </li>
                 </ul>
             </div>
-            <div class="col-md-6 form-group">
-                <label for="{{db.id}}_types">Types</label>
+            <div class="col-md-4 form-group" ng-show="secondarySubjects.length > 0">
+                <label for="{{db.id}}_subjectsS">Secondary Subjects</label>
+                <ul class="list-group" id="{{db.id}}_subjectsS">
+                    <li class="list-group-item" ng-repeat="subject in secondarySubjects = (db.subjects | filter:{type:'2'})">
+                        {{subject.subject}}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4 form-group">
+                <label for="{{db.id}}_types">Media Types</label>
                 <ul class="list-group" id="{{db.id}}_types">
                     <li class="list-group-item" ng-repeat="type in db.types">
                         {{type.type}}

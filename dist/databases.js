@@ -8,6 +8,7 @@ angular.module('databases', [
 ])
 
     .constant('DATABASES_API_URL', '//wwwdev2.lib.ua.edu/databases/api/')
+    .constant('PROXY_PREPEND_URL', 'http://libdata.lib.ua.edu/login?url=')
 
     .factory('dbFactory', ['$http', 'DATABASES_API_URL', function dbFactory($http, url){
         return {
@@ -17,7 +18,8 @@ angular.module('databases', [
         }
     }])
 
-    .controller('mainDatabasesCtrl', ['$scope', '$routeParams', 'dbFactory', function($scope, $routeParams, dbFactory){
+    .controller('mainDatabasesCtrl', ['$scope', '$routeParams', 'dbFactory', 'PROXY_PREPEND_URL',
+    function($scope, $routeParams, dbFactory, proxyURL){
         $scope.dbList = {};
         $scope.dbList.searchText = '';
         $scope.dbList.titleFilter = '';
@@ -29,10 +31,31 @@ angular.module('databases', [
         //need to load all databases only once
         dbFactory.getData("all")
             .success(function(data){
+                for (var i = 0; i < data.subjects.length; i++){
+                    data.subjects[i].selected = false;
+                }
+                for (var i = 0; i < data.types.length; i++){
+                    data.types[i].selected = true;
+                }
                 for (var i = 0; i < data.databases.length; i++){
                     data.databases[i].show = false;
+                    data.databases[i].primary = true;
                     data.databases[i].class = "";
                     data.databases[i].filterBy = data.databases[i].title + data.databases[i].description;
+                    if (data.databases[i].auth == '1')
+                        data.databases[i].url = proxyURL + data.databases[i].url;
+                    for (var j = 0; j < data.databases[i].subjects.length; j++)
+                        for (var k = 0; k < data.subjects.length; k++)
+                            if (data.databases[i].subjects[j].sid === data.subjects[k].sid){
+                                data.databases[i].subjects[j].index = k;
+                                break;
+                            }
+                    for (var j = 0; j < data.databases[i].types.length; j++)
+                        for (var k = 0; k < data.types.length; k++)
+                            if (data.databases[i].types[j].tid === data.types[k].tid){
+                                data.databases[i].types[j].index = k;
+                                break;
+                            }
                 }
                 $scope.dbList = data;
                 if (typeof $routeParams.s !== 'undefined')
@@ -74,7 +97,7 @@ angular.module('databases.common', [
 angular.module('common.databases', [])
 
 
-angular.module('databases.list', [])
+angular.module('databases.list', ['ngSanitize'])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/databases/:s?/title/:t?/ts/:ts?/descr/:d?/fs/:fs?/ft/:ft?', {
@@ -128,6 +151,8 @@ angular.module('databases.list', [])
         $scope.currentPage = 1;
         $scope.maxPageSize = 10;
         $scope.perPage = 20;
+        $scope.subTypSelOpen = false;
+        $scope.noSubjSelected = true;
 
         $scope.compareTitle = function(actual, expected){
             if (!expected)
@@ -136,12 +161,85 @@ angular.module('databases.list', [])
                 return true;
             return false;
         };
+        $scope.filterPrimarySubjects = function(actual, expected){
+            if ($scope.noSubjSelected)
+                return true;
+
+            for (var t = 0; t < expected.length; t++)
+                if (expected[t].selected){
+                    var isPresent = false;
+                    for (var i = 0; i < actual.length; i++)
+                        if (expected[t].sid == actual[i].sid){
+                            isPresent = true;
+                            break;
+                        }
+                    if (!isPresent)
+                        return false;
+                }
+
+            return true;
+        };
+        $scope.filterTypes = function(actual, expected){
+            for (var i = 0; i < actual.length; i++)
+                if (expected[actual[i].index].selected)
+                    return true;
+            return false;
+        };
         $scope.startTitle = function(actual, expected){
             if (!expected)
                 return true;
             if (actual.toLowerCase().indexOf(expected.toLowerCase()) == 0)
                 return true;
             return false;
+        };
+
+        $scope.selectAllSubjects = function(value){
+            for (var i = 0; i < $scope.dbList.subjects.length; i++)
+                $scope.dbList.subjects[i].selected = value;
+            $scope.noSubjSelected = !value;
+            $scope.updatePrimaryStatus();
+        };
+        $scope.selectAllTypes = function(value){
+            for (var i = 0; i < $scope.dbList.types.length; i++)
+                $scope.dbList.types[i].selected = value;
+        };
+        $scope.updateStatus = function(index){
+            //btn-checkbox will change value after this function returns
+            if (!$scope.dbList.subjects[index].selected){
+                $scope.noSubjSelected = false;
+            } else {
+                $scope.noSubjSelected = true;
+                for (var i = 0; i < $scope.dbList.subjects.length; i++)
+                    if ($scope.dbList.subjects[i].selected && i != index){
+                        $scope.noSubjSelected = false;
+                        break;
+                    }
+            }
+            $scope.updatePrimaryStatus();
+        };
+        $scope.updatePrimaryStatus = function(){
+            if ($scope.noSubjSelected)
+                for (var i = 0; i < $scope.dbList.databases.length; i++)
+                    $scope.dbList.databases[i].primary = true;
+            else
+                for (var i = 0; i < $scope.dbList.databases.length; i++){
+                    $scope.dbList.databases[i].primary = true;
+                    for (var t = 0; t < $scope.dbList.subjects.length; t++)
+                        if ($scope.dbList.subjects[t].selected){
+                            var isPresent = false;
+                            for (var j = 0; j < $scope.dbList.databases[i].subjects.length; j++)
+                                if ($scope.dbList.subjects[t].sid === $scope.dbList.databases[i].subjects[j].sid &&
+                                    $scope.dbList.databases[i].subjects[j].type == '1'){
+                                    isPresent = true;
+                                    break;
+                                }
+                            if (!isPresent){
+                                $scope.dbList.databases[i].primary = false;
+                                break;
+                            }
+                        }
+                }
+
         };
 
         $scope.toggleDB = function(db){
