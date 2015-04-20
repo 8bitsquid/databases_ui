@@ -9,15 +9,15 @@ angular.module('databases.list', ['ngSanitize'])
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
-            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/sub/:sub*\/typ/:typ*\/ft/:ft?', {
+            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/sub/:sub*\/typ/:typ*\/ft/:ft?/o/:o', {
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
-            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/sub/:sub*\/ft/:ft?', {
+            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/sub/:sub*\/ft/:ft?o/:o', {
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
-            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/typ/:typ*\/ft/:ft?', {
+            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/typ/:typ*\/ft/:ft?o/:o', {
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
@@ -51,6 +51,8 @@ angular.module('databases.list', ['ngSanitize'])
                 newPath += 'ft/';
                 if ($scope.dbList.typeFilter)
                     newPath = newPath + $scope.dbList.typeFilter + '/';
+                if ($scope.selectedSubjects.length > 0 || $scope.selectedTypes.length > 0)
+                    newPath = newPath + 'o/' + $scope.subTypSelOpen;
                 $location.path(newPath);
                 console.log(newPath)
             }
@@ -58,22 +60,32 @@ angular.module('databases.list', ['ngSanitize'])
             $rootScope.$on('$routeChangeSuccess', function(event, currentRoute){
                 if (typeof currentRoute.params.t !== 'undefined')
                     $scope.dbList.titleFilter = currentRoute.params.t;
+                else
+                    $scope.dbList.titleFilter = '';
                 if (typeof currentRoute.params.ts !== 'undefined')
                     $scope.dbList.titleStartFilter = currentRoute.params.ts;
+                else
+                    $scope.dbList.titleStartFilter = '';
                 if (typeof currentRoute.params.d !== 'undefined')
                     $scope.dbList.descrFilter = currentRoute.params.d;
+                else
+                    $scope.dbList.descrFilter = '';
                 if (typeof currentRoute.params.fs !== 'undefined')
                     $scope.dbList.subjectFilter = currentRoute.params.fs;
+                else
+                    $scope.dbList.subjectFilter = '';
                 if (typeof currentRoute.params.ft !== 'undefined')
                     $scope.dbList.typeFilter = currentRoute.params.ft;
+                else
+                    $scope.dbList.typeFilter = '';
                 for (var i = 0; i < $scope.dbList.subjects.length; i++){
                     $scope.dbList.subjects[i].selected = false;
                 }
                 for (var i = 0; i < $scope.dbList.types.length; i++){
                     $scope.dbList.types[i].selected = false;
                 }
+                $scope.selectedSubjects = [];
                 if (typeof currentRoute.params.sub !== 'undefined'){
-                    $scope.subTypSelOpen = true;
                     var subNames = currentRoute.params.sub.split("/");
                     for (var i = 0; i < subNames.length; i++)
                         for (var j = 0; j < $scope.dbList.subjects.length; j++)
@@ -83,8 +95,8 @@ angular.module('databases.list', ['ngSanitize'])
                                 $scope.dbList.subjects[j].selected = true;
                             }
                 }
+                $scope.selectedTypes = [];
                 if (typeof currentRoute.params.typ !== 'undefined'){
-                    $scope.subTypSelOpen = true;
                     var subNames = currentRoute.params.typ.split("/");
                     for (var i = 0; i < subNames.length; i++)
                         for (var j = 0; j < $scope.dbList.types.length; j++)
@@ -94,6 +106,11 @@ angular.module('databases.list', ['ngSanitize'])
                                 $scope.dbList.types[j].selected = true;
                             }
                 }
+                if (typeof currentRoute.params.o !== 'undefined')
+                    if (currentRoute.params.o.indexOf('true') === 0)
+                        $scope.subTypSelOpen = true;
+                    else
+                        $scope.subTypSelOpen = false;
                 console.log("$routeChangeSuccess");
             });
         }])

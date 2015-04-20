@@ -58,25 +58,28 @@ angular.module('databases', [
                 if (typeof $routeParams.ft !== 'undefined')
                     $scope.dbList.typeFilter = $routeParams.ft;
                 if (typeof $routeParams.sub !== 'undefined'){
-                    $scope.subTypSelOpen = true;
                     var subNames = $routeParams.sub.split("/");
                     for (var i = 0; i < subNames.length; i++)
                         for (var j = 0; j < $scope.dbList.subjects.length; j++)
                             if (subNames[i] === $scope.dbList.subjects[j].subject){
-                                $scope.selectedSubjects.push($scope.dbList.subjects[j]);
+                                if ($scope.selectedSubjects.indexOf($scope.dbList.subjects[j]) < 0)
+                                    $scope.selectedSubjects.push($scope.dbList.subjects[j]);
                                 $scope.dbList.subjects[j].selected = true;
                             }
                 }
                 if (typeof $routeParams.typ !== 'undefined'){
-                    $scope.subTypSelOpen = true;
                     var subNames = $routeParams.typ.split("/");
                     for (var i = 0; i < subNames.length; i++)
                         for (var j = 0; j < $scope.dbList.types.length; j++)
                             if (subNames[i] === $scope.dbList.types[j].type){
-                                $scope.selectedTypes.push($scope.dbList.types[j]);
+                                if ($scope.selectedTypes.indexOf($scope.dbList.types[j]) < 0)
+                                    $scope.selectedTypes.push($scope.dbList.types[j]);
                                 $scope.dbList.types[j].selected = true;
                             }
                 }
+                if (typeof $routeParams.o !== 'undefined')
+                    if ($routeParams.o.indexOf('true') === 0)
+                        $scope.subTypSelOpen = true;
                 console.dir($scope.dbList);
             })
             .error(function(msg){

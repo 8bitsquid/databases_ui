@@ -19,11 +19,19 @@
     </div>
     <div class="cold-md-12 form-group">
         <label for="selectST" ng-click="subTypSelOpen = !subTypSelOpen">
-            <span class="fa fa-fw fa-caret-right" ng-show="subTypSelOpen"></span>
-            <span class="fa fa-fw fa-caret-down" ng-show="!subTypSelOpen"></span>
+            <span class="fa fa-fw fa-caret-right" ng-show="!subTypSelOpen"></span>
+            <span class="fa fa-fw fa-caret-down" ng-show="subTypSelOpen"></span>
             <a>
                 Select Subjects and Media Types
             </a>
+            <label class="btn btn-default" btn-checkbox ng-repeat="subject in dbList.subjects | filter:{selected:'true'}"
+                   ng-model="subject.selected" ng-click="updateStatus(subject)">
+                {{subject.subject}}
+            </label>
+            <label class="btn btn-default" btn-checkbox ng-repeat="type in dbList.types | filter:{selected:'true'}"
+                   ng-model="type.selected" ng-click="updateTypes(type)">
+                {{type.type}}
+            </label>
         </label>
         <div id="selectST" ng-show="subTypSelOpen">
             <div class="col-md-8">
