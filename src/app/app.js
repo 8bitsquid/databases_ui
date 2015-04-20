@@ -21,7 +21,6 @@ angular.module('databases', [
     .controller('mainDatabasesCtrl', ['$scope', '$routeParams', 'dbFactory', 'PROXY_PREPEND_URL',
     function($scope, $routeParams, dbFactory, proxyURL){
         $scope.dbList = {};
-        $scope.dbList.searchText = '';
         $scope.dbList.titleFilter = '';
         $scope.dbList.titleStartFilter = '';
         $scope.dbList.descrFilter = '';
@@ -29,6 +28,7 @@ angular.module('databases', [
         $scope.dbList.typeFilter = '';
         $scope.selectedSubjects = [];
         $scope.selectedTypes = [];
+        $scope.subTypSelOpen = false;
 
         //need to load all databases only once
         dbFactory.getData("all")
@@ -43,13 +43,10 @@ angular.module('databases', [
                     data.databases[i].show = false;
                     data.databases[i].primary = true;
                     data.databases[i].class = "";
-                    data.databases[i].filterBy = data.databases[i].title + data.databases[i].description;
                     if (data.databases[i].auth == '1')
                         data.databases[i].url = proxyURL + data.databases[i].url;
                 }
                 $scope.dbList = data;
-                if (typeof $routeParams.s !== 'undefined')
-                    $scope.dbList.searchText = $routeParams.s;
                 if (typeof $routeParams.t !== 'undefined')
                     $scope.dbList.titleFilter = $routeParams.t;
                 if (typeof $routeParams.ts !== 'undefined')
@@ -61,6 +58,7 @@ angular.module('databases', [
                 if (typeof $routeParams.ft !== 'undefined')
                     $scope.dbList.typeFilter = $routeParams.ft;
                 if (typeof $routeParams.sub !== 'undefined'){
+                    $scope.subTypSelOpen = true;
                     var subNames = $routeParams.sub.split("/");
                     for (var i = 0; i < subNames.length; i++)
                         for (var j = 0; j < $scope.dbList.subjects.length; j++)
@@ -70,6 +68,7 @@ angular.module('databases', [
                             }
                 }
                 if (typeof $routeParams.typ !== 'undefined'){
+                    $scope.subTypSelOpen = true;
                     var subNames = $routeParams.typ.split("/");
                     for (var i = 0; i < subNames.length; i++)
                         for (var j = 0; j < $scope.dbList.types.length; j++)

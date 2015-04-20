@@ -11,18 +11,26 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "    <div class=\"col-md-12 form-group text-left\">\n" +
     "        <label for=\"filterBy\">Filter <small>{{filteredDB.length}}</small> results by</label>\n" +
     "        <div id=\"filterBy\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Title starts with\" ng-model=\"dbList.titleStartFilter\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Title contains\" ng-model=\"dbList.titleFilter\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Description contains\" ng-model=\"dbList.descrFilter\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Subjects contain\" ng-model=\"dbList.subjectFilter\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Media Types contain\" ng-model=\"dbList.typeFilter\">\n" +
+    "            <input type=\"text\" class=\"form-control\" placeholder=\"Title starts with\" ng-model=\"dbList.titleStartFilter\"\n" +
+    "                   ng-change=\"\">\n" +
+    "            <input type=\"text\" class=\"form-control\" placeholder=\"Title contains\" ng-model=\"dbList.titleFilter\"\n" +
+    "                   ng-change=\"\">\n" +
+    "            <input type=\"text\" class=\"form-control\" placeholder=\"Description contains\" ng-model=\"dbList.descrFilter\"\n" +
+    "                   ng-change=\"\">\n" +
+    "            <input type=\"text\" class=\"form-control\" placeholder=\"Subjects contain\" ng-model=\"dbList.subjectFilter\"\n" +
+    "                   ng-change=\"\">\n" +
+    "            <input type=\"text\" class=\"form-control\" placeholder=\"Media Types contain\" ng-model=\"dbList.typeFilter\"\n" +
+    "                   ng-change=\"\">\n" +
+    "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateURL()\">\n" +
+    "                Update URL\n" +
+    "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"cold-md-12 form-group\">\n" +
     "        <label for=\"selectST\" ng-click=\"subTypSelOpen = !subTypSelOpen\">\n" +
+    "            <span class=\"fa fa-fw fa-caret-right\" ng-show=\"subTypSelOpen\"></span>\n" +
+    "            <span class=\"fa fa-fw fa-caret-down\" ng-show=\"!subTypSelOpen\"></span>\n" +
     "            <a>\n" +
-    "                <span class=\"fa fa-fw fa-caret-right\" ng-hide=\"subTypSelOpen\"></span>\n" +
-    "                <span class=\"fa fa-fw fa-caret-down\" ng-show=\"subTypSelOpen\"></span>\n" +
     "                Select Subjects and Media Types\n" +
     "            </a>\n" +
     "        </label>\n" +
@@ -58,8 +66,7 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "                boundary-links=\"true\" rotate=\"false\" items-per-page=\"perPage\"></pagination>\n" +
     "</div>\n" +
     "<div class=\"row\"\n" +
-    "     ng-repeat=\"db in filteredDB = (dbList.databases | filter:{filterBy:dbList.searchText}:compareTitle\n" +
-    "                                                     | filter:{title:dbList.titleStartFilter}:startTitle\n" +
+    "     ng-repeat=\"db in filteredDB = (dbList.databases | filter:{title:dbList.titleStartFilter}:startTitle\n" +
     "                                                     | filter:{title:dbList.titleFilter}:compareTitle\n" +
     "                                                     | filter:{description:dbList.descrFilter}:compareTitle\n" +
     "                                                     | filter:{subjects:dbList.subjectFilter}:compareTitle\n" +
@@ -87,12 +94,12 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "            <p ng-bind-html=\"db.description\"></p>\n" +
     "            <h4 ng-show=\"primarySubj.length > 0\"><small>Primary Subjects:</small>\n" +
     "                <small ng-repeat=\"subject in primarySubj = (db.subjects | filter:{type:'1'})\">\n" +
-    "                    {{subject.subject}}<span ng-hide=\"$index == primarySubj.length-1\">, </span>\n" +
+    "                    {{subject.subject}}<span ng-hide=\"$index == primarySubj.length-1\"> | </span>\n" +
     "                </small>\n" +
     "            </h4>\n" +
     "            <h4><small>Media Types:</small>\n" +
     "                <small ng-repeat=\"type in db.types\">\n" +
-    "                    {{type.type}}<span ng-hide=\"$index == db.types.length-1\">, </span>\n" +
+    "                    {{type.type}}<span ng-hide=\"$index == db.types.length-1\"> | </span>\n" +
     "                </small>\n" +
     "            </h4>\n" +
     "        </div>\n" +
@@ -164,20 +171,6 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
 
 angular.module("dbList/dbListMain.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("dbList/dbListMain.tpl.html",
-    "<form ng-submit=\"search()\">\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-6\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Search Databases\" ng-model=\"dbList.searchText\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <button type=\"submit\" class=\"btn btn-primary\">\n" +
-    "                <span ng-show=\"dbList.searchText.length == 0\">Search</span>\n" +
-    "                <span ng-hide=\"dbList.searchText.length == 0\">Update URL</span>\n" +
-    "            </button>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</form>\n" +
-    "\n" +
     "<div databases-list></div>\n" +
     "");
 }]);
