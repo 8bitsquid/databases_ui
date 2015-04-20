@@ -27,6 +27,8 @@ angular.module('databases', [
         $scope.dbList.descrFilter = '';
         $scope.dbList.subjectFilter = '';
         $scope.dbList.typeFilter = '';
+        $scope.selectedSubjects = [];
+        $scope.selectedTypes = [];
 
         //need to load all databases only once
         dbFactory.getData("all")
@@ -35,7 +37,7 @@ angular.module('databases', [
                     data.subjects[i].selected = false;
                 }
                 for (var i = 0; i < data.types.length; i++){
-                    data.types[i].selected = true;
+                    data.types[i].selected = false;
                 }
                 for (var i = 0; i < data.databases.length; i++){
                     data.databases[i].show = false;
@@ -58,6 +60,24 @@ angular.module('databases', [
                     $scope.dbList.subjectFilter = $routeParams.fs;
                 if (typeof $routeParams.ft !== 'undefined')
                     $scope.dbList.typeFilter = $routeParams.ft;
+                if (typeof $routeParams.sub !== 'undefined'){
+                    var subNames = $routeParams.sub.split("/");
+                    for (var i = 0; i < subNames.length; i++)
+                        for (var j = 0; j < $scope.dbList.subjects.length; j++)
+                            if (subNames[i] === $scope.dbList.subjects[j].subject){
+                                $scope.selectedSubjects.push($scope.dbList.subjects[j]);
+                                $scope.dbList.subjects[j].selected = true;
+                            }
+                }
+                if (typeof $routeParams.typ !== 'undefined'){
+                    var subNames = $routeParams.typ.split("/");
+                    for (var i = 0; i < subNames.length; i++)
+                        for (var j = 0; j < $scope.dbList.types.length; j++)
+                            if (subNames[i] === $scope.dbList.types[j].type){
+                                $scope.selectedTypes.push($scope.dbList.types[j]);
+                                $scope.dbList.types[j].selected = true;
+                            }
+                }
                 console.dir($scope.dbList);
             })
             .error(function(msg){

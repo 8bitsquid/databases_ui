@@ -29,9 +29,6 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "        <div id=\"selectST\" ng-show=\"subTypSelOpen\">\n" +
     "            <div class=\"col-md-8\">\n" +
     "                <div class=\"text-center\">\n" +
-    "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllSubjects(true)\">\n" +
-    "                        Select All Subjects\n" +
-    "                    </button>\n" +
     "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllSubjects(false)\">\n" +
     "                        Deselect All Subjects\n" +
     "                    </button>\n" +
@@ -43,15 +40,12 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "            </div>\n" +
     "            <div class=\"col-md-4\">\n" +
     "                <div class=\"text-center\">\n" +
-    "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllTypes(true)\">\n" +
-    "                        Select All Types\n" +
-    "                    </button>\n" +
     "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllTypes(false)\">\n" +
     "                        Deselect All Types\n" +
     "                    </button>\n" +
     "                </div>\n" +
     "                <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"type in dbList.types\"\n" +
-    "                        ng-model=\"type.selected\">\n" +
+    "                        ng-model=\"type.selected\" ng-click=\"updateTypes(type)\">\n" +
     "                    {{type.type}}\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -71,7 +65,7 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "                                                     | filter:{subjects:dbList.subjectFilter}:compareTitle\n" +
     "                                                     | filter:{types:dbList.typeFilter}:compareTitle\n" +
     "                                                     | filter:{disabled:0}\n" +
-    "                                                     | filter:{subjects:selectedSubjects}:filterPrimarySubjects\n" +
+    "                                                     | filter:{subjects:selectedSubjects}:filterSubjects\n" +
     "                                                     | filter:{types:selectedTypes}:filterTypes\n" +
     "                                                     | orderBy:['-primary','title'])\n" +
     "    | startFrom:(currentPage-1)*perPage | limitTo:perPage\"\n" +
@@ -91,13 +85,16 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "        </div>\n" +
     "        <div class=\"col-md-12\">\n" +
     "            <p ng-bind-html=\"db.description\"></p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-12\" ng-show=\"primarySubj.length > 0\">\n" +
-    "            <h5>Primary Subjects:\n" +
+    "            <h4 ng-show=\"primarySubj.length > 0\"><small>Primary Subjects:</small>\n" +
     "                <small ng-repeat=\"subject in primarySubj = (db.subjects | filter:{type:'1'})\">\n" +
     "                    {{subject.subject}}<span ng-hide=\"$index == primarySubj.length-1\">, </span>\n" +
     "                </small>\n" +
-    "            </h5>\n" +
+    "            </h4>\n" +
+    "            <h4><small>Media Types:</small>\n" +
+    "                <small ng-repeat=\"type in db.types\">\n" +
+    "                    {{type.type}}<span ng-hide=\"$index == db.types.length-1\">, </span>\n" +
+    "                </small>\n" +
+    "            </h4>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\" ng-show=\"db.show\">\n" +
