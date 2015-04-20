@@ -44,18 +44,6 @@ angular.module('databases', [
                     data.databases[i].filterBy = data.databases[i].title + data.databases[i].description;
                     if (data.databases[i].auth == '1')
                         data.databases[i].url = proxyURL + data.databases[i].url;
-                    for (var j = 0; j < data.databases[i].subjects.length; j++)
-                        for (var k = 0; k < data.subjects.length; k++)
-                            if (data.databases[i].subjects[j].sid === data.subjects[k].sid){
-                                data.databases[i].subjects[j].index = k;
-                                break;
-                            }
-                    for (var j = 0; j < data.databases[i].types.length; j++)
-                        for (var k = 0; k < data.types.length; k++)
-                            if (data.databases[i].types[j].tid === data.types[k].tid){
-                                data.databases[i].types[j].index = k;
-                                break;
-                            }
                 }
                 $scope.dbList = data;
                 if (typeof $routeParams.s !== 'undefined')
@@ -152,7 +140,8 @@ angular.module('databases.list', ['ngSanitize'])
         $scope.maxPageSize = 10;
         $scope.perPage = 20;
         $scope.subTypSelOpen = false;
-        $scope.noSubjSelected = true;
+        $scope.selectedSubjects = [];
+        $scope.selectedTypes = [];
 
         $scope.compareTitle = function(actual, expected){
             if (!expected)
@@ -162,27 +151,36 @@ angular.module('databases.list', ['ngSanitize'])
             return false;
         };
         $scope.filterPrimarySubjects = function(actual, expected){
-            if ($scope.noSubjSelected)
+            if (expected.length == 0)
                 return true;
 
-            for (var t = 0; t < expected.length; t++)
-                if (expected[t].selected){
-                    var isPresent = false;
-                    for (var i = 0; i < actual.length; i++)
-                        if (expected[t].sid == actual[i].sid){
-                            isPresent = true;
-                            break;
-                        }
-                    if (!isPresent)
-                        return false;
-                }
+            for (var t = 0; t < expected.length; t++){
+                var isPresent = false;
+                for (var i = 0; i < actual.length; i++)
+                    if (expected[t].sid == actual[i].sid){
+                        isPresent = true;
+                        break;
+                    }
+                if (!isPresent)
+                    return false;
+            }
 
             return true;
         };
         $scope.filterTypes = function(actual, expected){
-            for (var i = 0; i < actual.length; i++)
-                if (expected[actual[i].index].selected)
-                    return true;
+            if (expected.length == 0)
+                return true;
+
+            for (var t = 0; t < expected.length; t++){
+                var isPresent = false;
+                for (var i = 0; i < actual.length; i++)
+                    if (expected[t].tid == actual[i].tid){
+                        isPresent = true;
+                        break;
+                    }
+                if (!isPresent)
+                    return false;
+            }
             return false;
         };
         $scope.startTitle = function(actual, expected){
@@ -194,50 +192,44 @@ angular.module('databases.list', ['ngSanitize'])
         };
 
         $scope.selectAllSubjects = function(value){
-            for (var i = 0; i < $scope.dbList.subjects.length; i++)
-                $scope.dbList.subjects[i].selected = value;
-            $scope.noSubjSelected = !value;
+            $scope.selectedSubjects = [];
+            if (value)
+                $scope.selectedSubjects = angular.copy($scope.dbList.subjects);
             $scope.updatePrimaryStatus();
         };
         $scope.selectAllTypes = function(value){
-            for (var i = 0; i < $scope.dbList.types.length; i++)
-                $scope.dbList.types[i].selected = value;
+            $scope.selectedTypes = [];
+            if (value)
+                $scope.selectedTypes = angular.copy($scope.dbList.types);
         };
-        $scope.updateStatus = function(index){
-            //btn-checkbox will change value after this function returns
-            if (!$scope.dbList.subjects[index].selected){
-                $scope.noSubjSelected = false;
-            } else {
-                $scope.noSubjSelected = true;
-                for (var i = 0; i < $scope.dbList.subjects.length; i++)
-                    if ($scope.dbList.subjects[i].selected && i != index){
-                        $scope.noSubjSelected = false;
-                        break;
-                    }
-            }
+        $scope.updateStatus = function(subject){
+            var index = $scope.selectedSubjects.indexOf(subject);
+            if (index > -1)
+                $scope.selectedSubjects.splice(index, 1);
+            else
+                $scope.selectedSubjects.push(subject);
             $scope.updatePrimaryStatus();
         };
         $scope.updatePrimaryStatus = function(){
-            if ($scope.noSubjSelected)
+            if ($scope.selectedSubjects.length == 0)
                 for (var i = 0; i < $scope.dbList.databases.length; i++)
                     $scope.dbList.databases[i].primary = true;
             else
                 for (var i = 0; i < $scope.dbList.databases.length; i++){
                     $scope.dbList.databases[i].primary = true;
-                    for (var t = 0; t < $scope.dbList.subjects.length; t++)
-                        if ($scope.dbList.subjects[t].selected){
-                            var isPresent = false;
-                            for (var j = 0; j < $scope.dbList.databases[i].subjects.length; j++)
-                                if ($scope.dbList.subjects[t].sid === $scope.dbList.databases[i].subjects[j].sid &&
-                                    $scope.dbList.databases[i].subjects[j].type == '1'){
-                                    isPresent = true;
-                                    break;
-                                }
-                            if (!isPresent){
-                                $scope.dbList.databases[i].primary = false;
+                    for (var t = 0; t < $scope.selectedSubjects.length; t++){
+                        var isPresent = false;
+                        for (var j = 0; j < $scope.dbList.databases[i].subjects.length; j++)
+                            if ($scope.selectedSubjects[t].sid === $scope.dbList.databases[i].subjects[j].sid &&
+                                $scope.dbList.databases[i].subjects[j].type == '1'){
+                                isPresent = true;
                                 break;
                             }
+                        if (!isPresent){
+                            $scope.dbList.databases[i].primary = false;
+                            break;
                         }
+                    }
                 }
 
         };

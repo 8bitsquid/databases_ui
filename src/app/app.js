@@ -44,18 +44,6 @@ angular.module('databases', [
                     data.databases[i].filterBy = data.databases[i].title + data.databases[i].description;
                     if (data.databases[i].auth == '1')
                         data.databases[i].url = proxyURL + data.databases[i].url;
-                    for (var j = 0; j < data.databases[i].subjects.length; j++)
-                        for (var k = 0; k < data.subjects.length; k++)
-                            if (data.databases[i].subjects[j].sid === data.subjects[k].sid){
-                                data.databases[i].subjects[j].index = k;
-                                break;
-                            }
-                    for (var j = 0; j < data.databases[i].types.length; j++)
-                        for (var k = 0; k < data.types.length; k++)
-                            if (data.databases[i].types[j].tid === data.types[k].tid){
-                                data.databases[i].types[j].index = k;
-                                break;
-                            }
                 }
                 $scope.dbList = data;
                 if (typeof $routeParams.s !== 'undefined')

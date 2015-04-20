@@ -28,7 +28,7 @@
                     </button>
                 </div>
                 <label class="btn btn-default" btn-checkbox ng-repeat="subject in dbList.subjects"
-                        ng-model="subject.selected" ng-click="updateStatus($index)">
+                        ng-model="subject.selected" ng-click="updateStatus(subject)">
                     {{subject.subject}}
                 </label>
             </div>
@@ -62,8 +62,8 @@
                                                      | filter:{subjects:dbList.subjectFilter}:compareTitle
                                                      | filter:{types:dbList.typeFilter}:compareTitle
                                                      | filter:{disabled:0}
-                                                     | filter:{subjects:dbList.subjects}:filterPrimarySubjects
-                                                     | filter:{types:dbList.types}:filterTypes
+                                                     | filter:{subjects:selectedSubjects}:filterPrimarySubjects
+                                                     | filter:{types:selectedTypes}:filterTypes
                                                      | orderBy:['-primary','title'])
     | startFrom:(currentPage-1)*perPage | limitTo:perPage"
      ng-class="{sdOpen: db.show, sdOver: db.id == mOver}" ng-mouseover="setOver(db)">
@@ -78,10 +78,17 @@
             </h4>
         </div>
         <div class="col-md-2 text-right">
-            <small ng-show="db.primary && !noSubjSelected">RECOMMENDED</small>
+            <small ng-show="db.primary && selectedSubjects.length > 0">RECOMMENDED</small>
         </div>
         <div class="col-md-12">
             <p ng-bind-html="db.description"></p>
+        </div>
+        <div class="col-md-12" ng-show="primarySubj.length > 0">
+            <h5>Primary Subjects:
+                <small ng-repeat="subject in primarySubj = (db.subjects | filter:{type:'1'})">
+                    {{subject.subject}}<span ng-hide="$index == primarySubj.length-1">, </span>
+                </small>
+            </h5>
         </div>
     </div>
     <div class="col-md-12" ng-show="db.show">

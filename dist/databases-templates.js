@@ -37,7 +37,7 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "                    </button>\n" +
     "                </div>\n" +
     "                <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"subject in dbList.subjects\"\n" +
-    "                        ng-model=\"subject.selected\" ng-click=\"updateStatus($index)\">\n" +
+    "                        ng-model=\"subject.selected\" ng-click=\"updateStatus(subject)\">\n" +
     "                    {{subject.subject}}\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -71,8 +71,8 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "                                                     | filter:{subjects:dbList.subjectFilter}:compareTitle\n" +
     "                                                     | filter:{types:dbList.typeFilter}:compareTitle\n" +
     "                                                     | filter:{disabled:0}\n" +
-    "                                                     | filter:{subjects:dbList.subjects}:filterPrimarySubjects\n" +
-    "                                                     | filter:{types:dbList.types}:filterTypes\n" +
+    "                                                     | filter:{subjects:selectedSubjects}:filterPrimarySubjects\n" +
+    "                                                     | filter:{types:selectedTypes}:filterTypes\n" +
     "                                                     | orderBy:['-primary','title'])\n" +
     "    | startFrom:(currentPage-1)*perPage | limitTo:perPage\"\n" +
     "     ng-class=\"{sdOpen: db.show, sdOver: db.id == mOver}\" ng-mouseover=\"setOver(db)\">\n" +
@@ -87,10 +87,17 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "            </h4>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-2 text-right\">\n" +
-    "            <small ng-show=\"db.primary && !noSubjSelected\">RECOMMENDED</small>\n" +
+    "            <small ng-show=\"db.primary && selectedSubjects.length > 0\">RECOMMENDED</small>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-12\">\n" +
     "            <p ng-bind-html=\"db.description\"></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-12\" ng-show=\"primarySubj.length > 0\">\n" +
+    "            <h5>Primary Subjects:\n" +
+    "                <small ng-repeat=\"subject in primarySubj = (db.subjects | filter:{type:'1'})\">\n" +
+    "                    {{subject.subject}}<span ng-hide=\"$index == primarySubj.length-1\">, </span>\n" +
+    "                </small>\n" +
+    "            </h5>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\" ng-show=\"db.show\">\n" +
