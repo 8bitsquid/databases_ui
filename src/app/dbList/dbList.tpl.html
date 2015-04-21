@@ -99,17 +99,29 @@
             <small ng-show="db.primary && dbList.selectedSubjects.length > 0">RECOMMENDED</small>
         </div>
         <div class="col-md-12">
-            <p ng-bind-html="db.description"></p>
-            <h4 ng-show="primarySubj.length > 0">
-                <small ng-repeat="subject in primarySubj = (db.subjects | filter:{type:'1'})">
-                    {{subject.subject}}<span ng-hide="$index == primarySubj.length-1"> | </span>
-                </small>
-            </h4>
-            <h4>
-                <small ng-repeat="type in db.types">
-                    {{type.type}}<span ng-hide="$index == db.types.length-1"> | </span>
-                </small>
-            </h4>
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-10">
+                <p ng-bind-html="db.description" style="text-align: justify;"></p>
+                <p ng-show="primarySubj.length > 0">
+                    <small ng-repeat="subject in primarySubj = (db.subjects | filter:{type:'1'})">
+                        {{subject.subject}}
+                        <span ng-hide="$index == primarySubj.length-1">
+                            <small><span class="fa fa-fw fa-ellipsis-h"></span></small>
+                        </span>
+                    </small>
+                </p>
+                <p>
+                    <small ng-repeat="type in db.types">
+                        {{type.type}}
+                        <span ng-hide="$index == db.types.length-1">
+                            <small><span class="fa fa-fw fa-ellipsis-h"></span></small>
+                        </span>
+                    </small>
+                </p>
+            </div>
+            <div class="col-md-1">
+            </div>
         </div>
     </div>
     <div class="col-md-12" ng-show="db.show">
