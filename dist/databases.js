@@ -234,7 +234,7 @@ angular.module('databases.list', ['ngSanitize'])
     .controller('dbListCtrl', ['$scope', function dbListCtrl($scope){
         $scope.currentPage = 1;
         $scope.maxPageSize = 10;
-        $scope.perPage = 20;
+        $scope.perPage = 10;
 
         $scope.compareTitle = function(actual, expected){
             if (!expected)
