@@ -28,7 +28,7 @@ angular.module('databases', [
         $scope.dbList.typeFilter = '';
         $scope.selectedSubjects = [];
         $scope.selectedTypes = [];
-        $scope.subTypSelOpen = false;
+        $scope.dbList.subTypSelOpen = false;
 
         //need to load all databases only once
         dbFactory.getData("all")
@@ -79,7 +79,7 @@ angular.module('databases', [
                 }
                 if (typeof $routeParams.o !== 'undefined')
                     if ($routeParams.o.indexOf('true') === 0)
-                        $scope.subTypSelOpen = true;
+                        $scope.dbList.subTypSelOpen = true;
                 console.dir($scope.dbList);
             })
             .error(function(msg){

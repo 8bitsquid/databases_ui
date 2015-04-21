@@ -27,22 +27,25 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"cold-md-12 form-group\">\n" +
-    "        <label for=\"selectST\" ng-click=\"subTypSelOpen = !subTypSelOpen\">\n" +
-    "            <span class=\"fa fa-fw fa-caret-right\" ng-show=\"!subTypSelOpen\"></span>\n" +
-    "            <span class=\"fa fa-fw fa-caret-down\" ng-show=\"subTypSelOpen\"></span>\n" +
-    "            <a>\n" +
-    "                Select Subjects and Media Types\n" +
+    "        <label for=\"selectST\">\n" +
+    "            <span class=\"fa fa-fw fa-caret-right\" ng-show=\"!dbList.subTypSelOpen\"></span>\n" +
+    "            <a ng-click=\"toggleSubjectsTypes(true)\" ng-show=\"!dbList.subTypSelOpen\">\n" +
+    "                Open Subjects and Media Types pane\n" +
+    "            </a>\n" +
+    "            <span class=\"fa fa-fw fa-caret-down\" ng-show=\"dbList.subTypSelOpen\"></span>\n" +
+    "            <a ng-click=\"toggleSubjectsTypes(false)\" ng-show=\"dbList.subTypSelOpen\">\n" +
+    "                Close Subjects and Media Types pane\n" +
     "            </a>\n" +
     "            <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"subject in dbList.subjects | filter:{selected:'true'}\"\n" +
     "                   ng-model=\"subject.selected\" ng-click=\"updateStatus(subject)\">\n" +
-    "                {{subject.subject}}\n" +
+    "                {{subject.subject}}<span class=\"fa fa-fw fa-close\"></span>\n" +
     "            </label>\n" +
     "            <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"type in dbList.types | filter:{selected:'true'}\"\n" +
     "                   ng-model=\"type.selected\" ng-click=\"updateTypes(type)\">\n" +
-    "                {{type.type}}\n" +
+    "                {{type.type}}<span class=\"fa fa-fw fa-close\"></span>\n" +
     "            </label>\n" +
     "        </label>\n" +
-    "        <div id=\"selectST\" ng-show=\"subTypSelOpen\">\n" +
+    "        <div id=\"selectST\" ng-show=\"isOpenSubTyp()\">\n" +
     "            <div class=\"col-md-8\">\n" +
     "                <div class=\"text-center\">\n" +
     "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllSubjects(false)\">\n" +

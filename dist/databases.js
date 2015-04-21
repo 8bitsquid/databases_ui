@@ -28,7 +28,7 @@ angular.module('databases', [
         $scope.dbList.typeFilter = '';
         $scope.selectedSubjects = [];
         $scope.selectedTypes = [];
-        $scope.subTypSelOpen = false;
+        $scope.dbList.subTypSelOpen = false;
 
         //need to load all databases only once
         dbFactory.getData("all")
@@ -79,7 +79,7 @@ angular.module('databases', [
                 }
                 if (typeof $routeParams.o !== 'undefined')
                     if ($routeParams.o.indexOf('true') === 0)
-                        $scope.subTypSelOpen = true;
+                        $scope.dbList.subTypSelOpen = true;
                 console.dir($scope.dbList);
             })
             .error(function(msg){
@@ -161,9 +161,8 @@ angular.module('databases.list', ['ngSanitize'])
                 if ($scope.dbList.typeFilter)
                     newPath = newPath + $scope.dbList.typeFilter + '/';
                 if ($scope.selectedSubjects.length > 0 || $scope.selectedTypes.length > 0)
-                    newPath = newPath + 'o/' + $scope.subTypSelOpen;
+                    newPath = newPath + 'o/' + $scope.dbList.subTypSelOpen;
                 $location.path(newPath);
-                console.log(newPath)
             }
 
             $rootScope.$on('$routeChangeSuccess', function(event, currentRoute){
@@ -187,13 +186,14 @@ angular.module('databases.list', ['ngSanitize'])
                     $scope.dbList.typeFilter = currentRoute.params.ft;
                 else
                     $scope.dbList.typeFilter = '';
+
                 for (var i = 0; i < $scope.dbList.subjects.length; i++){
                     $scope.dbList.subjects[i].selected = false;
                 }
                 for (var i = 0; i < $scope.dbList.types.length; i++){
                     $scope.dbList.types[i].selected = false;
                 }
-                $scope.selectedSubjects = [];
+                $scope.selectedSubjects.splice(0, $scope.selectedSubjects.length);
                 if (typeof currentRoute.params.sub !== 'undefined'){
                     var subNames = currentRoute.params.sub.split("/");
                     for (var i = 0; i < subNames.length; i++)
@@ -204,7 +204,7 @@ angular.module('databases.list', ['ngSanitize'])
                                 $scope.dbList.subjects[j].selected = true;
                             }
                 }
-                $scope.selectedTypes = [];
+                $scope.selectedTypes.splice(0, $scope.selectedTypes.length);
                 if (typeof currentRoute.params.typ !== 'undefined'){
                     var subNames = currentRoute.params.typ.split("/");
                     for (var i = 0; i < subNames.length; i++)
@@ -215,12 +215,10 @@ angular.module('databases.list', ['ngSanitize'])
                                 $scope.dbList.types[j].selected = true;
                             }
                 }
+                $scope.dbList.subTypSelOpen = false;
                 if (typeof currentRoute.params.o !== 'undefined')
                     if (currentRoute.params.o.indexOf('true') === 0)
-                        $scope.subTypSelOpen = true;
-                    else
-                        $scope.subTypSelOpen = false;
-                console.log("$routeChangeSuccess");
+                        $scope.dbList.subTypSelOpen = true;
             });
         }])
 
@@ -278,7 +276,7 @@ angular.module('databases.list', ['ngSanitize'])
         };
 
         $scope.selectAllSubjects = function(value){
-            $scope.selectedSubjects = [];
+            $scope.selectedSubjects.splice(0, $scope.selectedSubjects.length);
             for (var i = 0; i < $scope.dbList.subjects.length; i++)
                 $scope.dbList.subjects[i].selected = value;
             if (value)
@@ -287,7 +285,7 @@ angular.module('databases.list', ['ngSanitize'])
             $scope.updateURL();
         };
         $scope.selectAllTypes = function(value){
-            $scope.selectedTypes = [];
+            $scope.selectedTypes.splice(0, $scope.selectedTypes.length);
             for (var i = 0; i < $scope.dbList.types.length; i++)
                 $scope.dbList.types[i].selected = value;
             if (value)
@@ -333,6 +331,13 @@ angular.module('databases.list', ['ngSanitize'])
                     }
                 }
 
+        };
+        $scope.toggleSubjectsTypes = function(value){
+            $scope.dbList.subTypSelOpen = value;
+            $scope.updateURL();
+        };
+        $scope.isOpenSubTyp = function(){
+            return $scope.dbList.subTypSelOpen;
         };
 
         $scope.toggleDB = function(db){

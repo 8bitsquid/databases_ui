@@ -18,22 +18,25 @@
         </div>
     </div>
     <div class="cold-md-12 form-group">
-        <label for="selectST" ng-click="subTypSelOpen = !subTypSelOpen">
-            <span class="fa fa-fw fa-caret-right" ng-show="!subTypSelOpen"></span>
-            <span class="fa fa-fw fa-caret-down" ng-show="subTypSelOpen"></span>
-            <a>
-                Select Subjects and Media Types
+        <label for="selectST">
+            <span class="fa fa-fw fa-caret-right" ng-show="!dbList.subTypSelOpen"></span>
+            <a ng-click="toggleSubjectsTypes(true)" ng-show="!dbList.subTypSelOpen">
+                Open Subjects and Media Types pane
+            </a>
+            <span class="fa fa-fw fa-caret-down" ng-show="dbList.subTypSelOpen"></span>
+            <a ng-click="toggleSubjectsTypes(false)" ng-show="dbList.subTypSelOpen">
+                Close Subjects and Media Types pane
             </a>
             <label class="btn btn-default" btn-checkbox ng-repeat="subject in dbList.subjects | filter:{selected:'true'}"
                    ng-model="subject.selected" ng-click="updateStatus(subject)">
-                {{subject.subject}}
+                {{subject.subject}}<span class="fa fa-fw fa-close"></span>
             </label>
             <label class="btn btn-default" btn-checkbox ng-repeat="type in dbList.types | filter:{selected:'true'}"
                    ng-model="type.selected" ng-click="updateTypes(type)">
-                {{type.type}}
+                {{type.type}}<span class="fa fa-fw fa-close"></span>
             </label>
         </label>
-        <div id="selectST" ng-show="subTypSelOpen">
+        <div id="selectST" ng-show="isOpenSubTyp()">
             <div class="col-md-8">
                 <div class="text-center">
                     <button type="button" class="btn btn-primary" ng-click="selectAllSubjects(false)">
