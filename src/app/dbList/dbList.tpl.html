@@ -74,8 +74,8 @@
                                                      | filter:{subjects:dbList.subjectFilter}:compareTitle
                                                      | filter:{types:dbList.typeFilter}:compareTitle
                                                      | filter:{disabled:0}
-                                                     | filter:{subjects:selectedSubjects}:filterSubjects
-                                                     | filter:{types:selectedTypes}:filterTypes
+                                                     | filter:{subjects:dbList.selectedSubjects}:filterSubjects
+                                                     | filter:{types:dbList.selectedTypes}:filterTypes
                                                      | orderBy:['-primary','title'])
     | startFrom:(currentPage-1)*perPage | limitTo:perPage"
      ng-class="{sdOpen: db.show, sdOver: db.id == mOver}" ng-mouseover="setOver(db)">
@@ -90,7 +90,7 @@
             </h4>
         </div>
         <div class="col-md-2 text-right">
-            <small ng-show="db.primary && selectedSubjects.length > 0">RECOMMENDED</small>
+            <small ng-show="db.primary && dbList.selectedSubjects.length > 0">RECOMMENDED</small>
         </div>
         <div class="col-md-12">
             <p ng-bind-html="db.description"></p>

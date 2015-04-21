@@ -83,8 +83,8 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "                                                     | filter:{subjects:dbList.subjectFilter}:compareTitle\n" +
     "                                                     | filter:{types:dbList.typeFilter}:compareTitle\n" +
     "                                                     | filter:{disabled:0}\n" +
-    "                                                     | filter:{subjects:selectedSubjects}:filterSubjects\n" +
-    "                                                     | filter:{types:selectedTypes}:filterTypes\n" +
+    "                                                     | filter:{subjects:dbList.selectedSubjects}:filterSubjects\n" +
+    "                                                     | filter:{types:dbList.selectedTypes}:filterTypes\n" +
     "                                                     | orderBy:['-primary','title'])\n" +
     "    | startFrom:(currentPage-1)*perPage | limitTo:perPage\"\n" +
     "     ng-class=\"{sdOpen: db.show, sdOver: db.id == mOver}\" ng-mouseover=\"setOver(db)\">\n" +
@@ -99,7 +99,7 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "            </h4>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-2 text-right\">\n" +
-    "            <small ng-show=\"db.primary && selectedSubjects.length > 0\">RECOMMENDED</small>\n" +
+    "            <small ng-show=\"db.primary && dbList.selectedSubjects.length > 0\">RECOMMENDED</small>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-12\">\n" +
     "            <p ng-bind-html=\"db.description\"></p>\n" +
