@@ -90,12 +90,36 @@ angular.module('databases', [
                 if (typeof $routeParams.o !== 'undefined')
                     if ($routeParams.o.indexOf('true') === 0)
                         $scope.dbList.subTypSelOpen = true;
+                $scope.updatePrimaryStatus();
                 console.dir($scope.dbList);
             })
             .error(function(msg){
                 console.log(msg);
             });
 
+        $scope.updatePrimaryStatus = function(){
+            if ($scope.dbList.selectedSubjects.length == 0)
+                for (var i = 0; i < $scope.dbList.databases.length; i++)
+                    $scope.dbList.databases[i].primary = true;
+            else
+                for (var i = 0; i < $scope.dbList.databases.length; i++){
+                    $scope.dbList.databases[i].primary = true;
+                    for (var t = 0; t < $scope.dbList.selectedSubjects.length; t++){
+                        var isPresent = false;
+                        for (var j = 0; j < $scope.dbList.databases[i].subjects.length; j++)
+                            if ($scope.dbList.selectedSubjects[t].sid === $scope.dbList.databases[i].subjects[j].sid &&
+                                $scope.dbList.databases[i].subjects[j].type == '1'){
+                                isPresent = true;
+                                break;
+                            }
+                        if (!isPresent){
+                            $scope.dbList.databases[i].primary = false;
+                            break;
+                        }
+                    }
+                }
+
+        };
     }])
     .directive('databasesMain', [function databasesMain(){
         return {

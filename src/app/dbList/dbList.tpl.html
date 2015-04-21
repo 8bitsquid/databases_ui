@@ -1,6 +1,6 @@
 <div class="row form-inline">
     <div class="col-md-12 form-group text-left">
-        <label for="filterBy">Filter <small>{{filteredDB.length}}</small> results by</label>
+        <label for="filterBy">Filter <strong>{{filteredDB.length}}</strong> results by</label>
         <div id="filterBy">
             <input type="text" class="form-control" placeholder="Title starts with" ng-model="dbList.titleStartFilter"
                    ng-change="">
@@ -86,7 +86,7 @@
     | startFrom:(currentPage-1)*perPage | limitTo:perPage"
      ng-class="{sdOpen: db.show, sdOver: db.id == mOver}" ng-mouseover="setOver(db)">
     <div class="col-md-12" ng-click="toggleDB(db)">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <h4>
                 <span class="fa fa-fw fa-caret-right" ng-hide="db.show"></span>
                 <span class="fa fa-fw fa-caret-down" ng-show="db.show"></span>
@@ -95,8 +95,10 @@
                 <small>{{db.coverage}}</small>
             </h4>
         </div>
-        <div class="col-md-2 text-right">
-            <small ng-show="db.primary && dbList.selectedSubjects.length > 0">RECOMMENDED</small>
+        <div class="col-md-1">
+            <span ng-show="db.primary && dbList.selectedSubjects.length > 0" popover="Recommended" popover-trigger="mouseenter">
+                <span class="fa fa-fw fa-check"></span>
+            </span>
         </div>
         <div class="col-md-12">
             <div class="col-md-1">

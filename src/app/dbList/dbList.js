@@ -199,29 +199,6 @@ angular.module('databases.list', ['ngSanitize'])
                 $scope.dbList.selectedTypes.push(type);
             $scope.updateURL();
         };
-        $scope.updatePrimaryStatus = function(){
-            if ($scope.dbList.selectedSubjects.length == 0)
-                for (var i = 0; i < $scope.dbList.databases.length; i++)
-                    $scope.dbList.databases[i].primary = true;
-            else
-                for (var i = 0; i < $scope.dbList.databases.length; i++){
-                    $scope.dbList.databases[i].primary = true;
-                    for (var t = 0; t < $scope.dbList.selectedSubjects.length; t++){
-                        var isPresent = false;
-                        for (var j = 0; j < $scope.dbList.databases[i].subjects.length; j++)
-                            if ($scope.dbList.selectedSubjects[t].sid === $scope.dbList.databases[i].subjects[j].sid &&
-                                $scope.dbList.databases[i].subjects[j].type == '1'){
-                                isPresent = true;
-                                break;
-                            }
-                        if (!isPresent){
-                            $scope.dbList.databases[i].primary = false;
-                            break;
-                        }
-                    }
-                }
-
-        };
         $scope.toggleSubjectsTypes = function(value){
             $scope.dbList.subTypSelOpen = value;
             $scope.updateURL();
