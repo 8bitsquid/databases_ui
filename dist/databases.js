@@ -156,11 +156,11 @@ angular.module('databases.list', ['ngSanitize'])
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
-            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/sub/:sub*\/ft/:ft?o/:o', {
+            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/sub/:sub*\/ft/:ft?/o/:o', {
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
-            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/typ/:typ*\/ft/:ft?o/:o', {
+            .when('/databases/:t?/ts/:ts?/d/:d?/fs/:fs?/typ/:typ*\/ft/:ft?/o/:o', {
                 templateUrl: 'dbList/dbListMain.tpl.html',
                 controller: 'databasesCtrl'
             })
