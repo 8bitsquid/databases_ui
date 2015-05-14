@@ -132,17 +132,16 @@
             <label for="{{db.id}}_Publisher">Publisher</label>
             <p id="{{db.id}}_Publisher">{{db.publisher}}</p>
         </div>
-        <div class="col-md-2 form-group" ng-show="db.vendor">
-            <label for="{{db.id}}_Vendor">Vendor</label>
-            <p id="{{db.id}}_Vendor">{{db.vendor}}</p>
-        </div>
-        <div class="col-md-2 form-group" ng-show="db.location">
+        <div class="col-md-2 form-group" ng-show="db.location && db.location != 'UA, Remote'">
             <label for="{{db.id}}_Location">Location</label>
             <p id="{{db.id}}_Location">{{db.location}}</p>
         </div>
         <div class="col-md-2 form-group">
-            <label for="{{db.id}}_NotInEDS">Not in EDS</label>
-            <p id="{{db.id}}_NotInEDS">{{db.notInEDS}}<span ng-hide="db.notInEDS">In EDS</span></p>
+            <label for="{{db.id}}_NotInEDS">Scout Availability</label>
+            <p id="{{db.id}}_NotInEDS">
+                <span ng-show="db.notInEDS">Not Available</span>
+                <span ng-hide="db.notInEDS">Available</span>
+            </p>
         </div>
         <div class="col-md-2 form-group">
             <label for="{{db.id}}_Full-text">Fulltext</label>
@@ -155,32 +154,6 @@
         <div class="col-md-2 form-group" ng-show="db.audience1 || db.audience2">
             <label for="{{db.id}}_Audience1">Audience</label>
             <p id="{{db.id}}_Audience1">{{db.audience1}} <span ng-show="db.audience2">, {{db.audience2}}</span></p>
-        </div>
-        <div class="col-md-12">
-            <div class="col-md-4 form-group" ng-show="primarySubjects.length > 0">
-                <label for="{{db.id}}_subjectsP">Primary Subjects</label>
-                <ul class="list-group" id="{{db.id}}_subjectsP">
-                    <li class="list-group-item" ng-repeat="subject in primarySubjects = (db.subjects | filter:{type:'1'})">
-                        {{subject.subject}}
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-4 form-group" ng-show="secondarySubjects.length > 0">
-                <label for="{{db.id}}_subjectsS">Secondary Subjects</label>
-                <ul class="list-group" id="{{db.id}}_subjectsS">
-                    <li class="list-group-item" ng-repeat="subject in secondarySubjects = (db.subjects | filter:{type:'2'})">
-                        {{subject.subject}}
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-4 form-group">
-                <label for="{{db.id}}_types">Media Types</label>
-                <ul class="list-group" id="{{db.id}}_types">
-                    <li class="list-group-item" ng-repeat="type in db.types">
-                        {{type.type}}
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 </div>

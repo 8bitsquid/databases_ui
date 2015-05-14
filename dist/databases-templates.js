@@ -141,17 +141,16 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "            <label for=\"{{db.id}}_Publisher\">Publisher</label>\n" +
     "            <p id=\"{{db.id}}_Publisher\">{{db.publisher}}</p>\n" +
     "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\" ng-show=\"db.vendor\">\n" +
-    "            <label for=\"{{db.id}}_Vendor\">Vendor</label>\n" +
-    "            <p id=\"{{db.id}}_Vendor\">{{db.vendor}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\" ng-show=\"db.location\">\n" +
+    "        <div class=\"col-md-2 form-group\" ng-show=\"db.location && db.location != 'UA, Remote'\">\n" +
     "            <label for=\"{{db.id}}_Location\">Location</label>\n" +
     "            <p id=\"{{db.id}}_Location\">{{db.location}}</p>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-2 form-group\">\n" +
-    "            <label for=\"{{db.id}}_NotInEDS\">Not in EDS</label>\n" +
-    "            <p id=\"{{db.id}}_NotInEDS\">{{db.notInEDS}}<span ng-hide=\"db.notInEDS\">In EDS</span></p>\n" +
+    "            <label for=\"{{db.id}}_NotInEDS\">Scout Availability</label>\n" +
+    "            <p id=\"{{db.id}}_NotInEDS\">\n" +
+    "                <span ng-show=\"db.notInEDS\">Not Available</span>\n" +
+    "                <span ng-hide=\"db.notInEDS\">Available</span>\n" +
+    "            </p>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-2 form-group\">\n" +
     "            <label for=\"{{db.id}}_Full-text\">Fulltext</label>\n" +
@@ -164,32 +163,6 @@ angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($te
     "        <div class=\"col-md-2 form-group\" ng-show=\"db.audience1 || db.audience2\">\n" +
     "            <label for=\"{{db.id}}_Audience1\">Audience</label>\n" +
     "            <p id=\"{{db.id}}_Audience1\">{{db.audience1}} <span ng-show=\"db.audience2\">, {{db.audience2}}</span></p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"col-md-4 form-group\" ng-show=\"primarySubjects.length > 0\">\n" +
-    "                <label for=\"{{db.id}}_subjectsP\">Primary Subjects</label>\n" +
-    "                <ul class=\"list-group\" id=\"{{db.id}}_subjectsP\">\n" +
-    "                    <li class=\"list-group-item\" ng-repeat=\"subject in primarySubjects = (db.subjects | filter:{type:'1'})\">\n" +
-    "                        {{subject.subject}}\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-md-4 form-group\" ng-show=\"secondarySubjects.length > 0\">\n" +
-    "                <label for=\"{{db.id}}_subjectsS\">Secondary Subjects</label>\n" +
-    "                <ul class=\"list-group\" id=\"{{db.id}}_subjectsS\">\n" +
-    "                    <li class=\"list-group-item\" ng-repeat=\"subject in secondarySubjects = (db.subjects | filter:{type:'2'})\">\n" +
-    "                        {{subject.subject}}\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-md-4 form-group\">\n" +
-    "                <label for=\"{{db.id}}_types\">Media Types</label>\n" +
-    "                <ul class=\"list-group\" id=\"{{db.id}}_types\">\n" +
-    "                    <li class=\"list-group-item\" ng-repeat=\"type in db.types\">\n" +
-    "                        {{type.type}}\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
-    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
