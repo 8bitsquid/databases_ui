@@ -1,181 +1,79 @@
-angular.module('databases.templates', ['dbList/databasesMain.tpl.html', 'dbList/dbList.tpl.html', 'dbList/dbListMain.tpl.html']);
+angular.module('databases.templates', ['databases/databases-list.tpl.html']);
 
-angular.module("dbList/databasesMain.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("dbList/databasesMain.tpl.html",
-    "<div ng-view></div>");
-}]);
-
-angular.module("dbList/dbList.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("dbList/dbList.tpl.html",
-    "<div class=\"row form-inline\">\n" +
-    "    <div class=\"col-md-12 form-group text-left\">\n" +
-    "        <label for=\"filterBy\">Filter <strong>{{filteredDB.length}}</strong> results by</label>\n" +
-    "        <div id=\"filterBy\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Title starts with\" ng-model=\"dbList.titleStartFilter\"\n" +
-    "                   ng-change=\"\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Title contains\" ng-model=\"dbList.titleFilter\"\n" +
-    "                   ng-change=\"\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Description contains\" ng-model=\"dbList.descrFilter\"\n" +
-    "                   ng-change=\"\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Subjects contain\" ng-model=\"dbList.subjectFilter\"\n" +
-    "                   ng-change=\"\">\n" +
-    "            <input type=\"text\" class=\"form-control\" placeholder=\"Media Types contain\" ng-model=\"dbList.typeFilter\"\n" +
-    "                   ng-change=\"\">\n" +
-    "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateURL()\">\n" +
-    "                Update URL\n" +
-    "            </button>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"cold-md-12 form-group\">\n" +
-    "        <h4 ng-show=\"selSubj.length > 0 || selTypes.length > 0\">\n" +
+angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("databases/databases-list.tpl.html",
+    "<div class=\"page-header\"><h1>Databases</h1></div>\n" +
     "\n" +
-    "            <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"subject in selSubj = (dbList.subjects | filter:{selected:'true'})\"\n" +
-    "                   ng-model=\"subject.selected\" ng-click=\"updateStatus(subject)\">\n" +
-    "                {{subject.subject}}<span class=\"fa fa-fw fa-close\"></span>\n" +
-    "            </label>\n" +
-    "            <span ng-show=\"selTypes.length > 0\">\n" +
-    "                <span ng-show=\"selSubj.length > 0\"> | </span>\n" +
-    "            </span>\n" +
-    "            <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"type in selTypes = (dbList.types | filter:{selected:'true'})\"\n" +
-    "                   ng-model=\"type.selected\" ng-click=\"updateTypes(type)\">\n" +
-    "                {{type.type}}<span class=\"fa fa-fw fa-close\"></span>\n" +
-    "            </label>\n" +
-    "        </h4>\n" +
-    "        <label for=\"selectST\">\n" +
-    "            <span class=\"fa fa-fw fa-caret-right\" ng-show=\"!dbList.subTypSelOpen\"></span>\n" +
-    "            <a ng-click=\"toggleSubjectsTypes(true)\" ng-show=\"!dbList.subTypSelOpen\">\n" +
-    "                Open Subjects and Media Types pane\n" +
-    "            </a>\n" +
-    "            <span class=\"fa fa-fw fa-caret-down\" ng-show=\"dbList.subTypSelOpen\"></span>\n" +
-    "            <a ng-click=\"toggleSubjectsTypes(false)\" ng-show=\"dbList.subTypSelOpen\">\n" +
-    "                Close Subjects and Media Types pane\n" +
-    "            </a>\n" +
-    "        </label>\n" +
-    "        <div id=\"selectST\" ng-show=\"isOpenSubTyp()\">\n" +
-    "            <div class=\"col-md-8\">\n" +
-    "                <div class=\"text-center\">\n" +
-    "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllSubjects(false)\">\n" +
-    "                        Deselect All Subjects\n" +
-    "                    </button>\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-3 col-md-push-9\">\n" +
+    "        <form class=\"facets-form\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"db.search\" placeholder=\"Search databases\">\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"form-group hidden-xs\">\n" +
+    "                <h5>Title starts with</h5>\n" +
+    "                <div class=\"facet-group alphanum-group\">\n" +
+    "                    <div class=\"btn-group\">\n" +
+    "                        <label class=\"btn btn-default\" ng-repeat=\"na in numAlpha\" ng-model=\"db.startsWith\" btn-radio=\"'{{na}}'\" uncheckable>{{na}}</label>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
-    "                <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"subject in dbList.subjects\"\n" +
-    "                        ng-model=\"subject.selected\" ng-click=\"updateStatus(subject)\">\n" +
-    "                    {{subject.subject}}\n" +
-    "                </label>\n" +
     "            </div>\n" +
-    "            <div class=\"col-md-4\">\n" +
-    "                <div class=\"text-center\">\n" +
-    "                    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"selectAllTypes(false)\">\n" +
-    "                        Deselect All Types\n" +
-    "                    </button>\n" +
+    "\n" +
+    "            <div class=\"form-group hidden-xs\">\n" +
+    "                <h5>Subjects</h5>\n" +
+    "                <div class=\"facet-group\">\n" +
+    "                    <div class=\"radio\" ng-class=\"{'disabled': subj.disabled}\" ng-repeat=\"subj in subjects\">\n" +
+    "                        <label>\n" +
+    "                            <input type=\"checkbox\" ng-model=\"db.subjects[subj.subject]\" ng-disabled=\"subj.disabled\">\n" +
+    "                            {{subj.subject}}\n" +
+    "                        </label>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
-    "                <label class=\"btn btn-default\" btn-checkbox ng-repeat=\"type in dbList.types\"\n" +
-    "                        ng-model=\"type.selected\" ng-click=\"updateTypes(type)\">\n" +
-    "                    {{type.type}}\n" +
-    "                </label>\n" +
     "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>\n" +
     "\n" +
-    "<div class=\"text-center\">\n" +
-    "    <pagination total-items=\"filteredDB.length\" ng-model=\"currentPage\" max-size=\"maxPageSize\" class=\"pagination-sm\"\n" +
-    "                boundary-links=\"true\" rotate=\"false\" items-per-page=\"perPage\"></pagination>\n" +
-    "</div>\n" +
-    "<div class=\"row\"\n" +
-    "     ng-repeat=\"db in filteredDB = (dbList.databases | filter:{title:dbList.titleStartFilter}:startTitle\n" +
-    "                                                     | filter:{title:dbList.titleFilter}:compareTitle\n" +
-    "                                                     | filter:{description:dbList.descrFilter}:compareTitle\n" +
-    "                                                     | filter:{subjects:dbList.subjectFilter}:compareTitle\n" +
-    "                                                     | filter:{types:dbList.typeFilter}:compareTitle\n" +
-    "                                                     | filter:{disabled:0}\n" +
-    "                                                     | filter:{subjects:dbList.selectedSubjects}:filterSubjects\n" +
-    "                                                     | filter:{types:dbList.selectedTypes}:filterTypes\n" +
-    "                                                     | orderBy:['-primary','title'])\n" +
-    "    | startFrom:(currentPage-1)*perPage | limitTo:perPage\"\n" +
-    "     ng-class=\"{sdOpen: db.show, sdOver: db.id == mOver}\" ng-mouseover=\"setOver(db)\">\n" +
-    "    <div class=\"col-md-12\" ng-click=\"toggleDB(db)\">\n" +
-    "        <div class=\"col-md-11\">\n" +
-    "            <h4>\n" +
-    "                <span class=\"fa fa-fw fa-caret-right\" ng-hide=\"db.show\"></span>\n" +
-    "                <span class=\"fa fa-fw fa-caret-down\" ng-show=\"db.show\"></span>\n" +
-    "                <a href=\"{{db.url}}\" ng-hide=\"db.tmpDisabled == '1'\">{{db.title}}</a>\n" +
-    "                <span ng-show=\"db.tmpDisabled == '1'\">{{db.title}}</span>\n" +
-    "                <small>{{db.coverage}}</small>\n" +
-    "                <span class=\"dbStatus\">{{db.status}}</span>\n" +
-    "            </h4>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-1\">\n" +
-    "            <span ng-show=\"db.primary && dbList.selectedSubjects.length > 0\" popover=\"Recommended\" popover-trigger=\"mouseenter\">\n" +
-    "                <span class=\"fa fa-fw fa-check\"></span>\n" +
-    "            </span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"col-md-1\">\n" +
+    "            <div class=\"form-group hidden-xs\">\n" +
+    "                <h5>Types</h5>\n" +
+    "                <div class=\"facet-group\">\n" +
+    "                    <div class=\"radio\" ng-class=\"{'disabled': type.disabled}\" ng-repeat=\"type in types\">\n" +
+    "                        <label>\n" +
+    "                            <input type=\"checkbox\" ng-model=\"db.types[type.type]\"  ng-disabled=\"type.disabled\">\n" +
+    "                            {{type.type}}\n" +
+    "                        </label>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"col-md-10\">\n" +
-    "                <p ng-bind-html=\"db.description\" style=\"text-align: justify;\"></p>\n" +
-    "                <p ng-show=\"primarySubj.length > 0\">\n" +
-    "                    <small ng-repeat=\"subject in primarySubj = (db.subjects | filter:{type:'1'})\">\n" +
-    "                        {{subject.subject}}\n" +
-    "                        <span ng-hide=\"$index == primarySubj.length-1\">\n" +
-    "                            <small><span class=\"fa fa-fw fa-ellipsis-h\"></span></small>\n" +
-    "                        </span>\n" +
-    "                    </small>\n" +
-    "                </p>\n" +
-    "                <p>\n" +
-    "                    <small ng-repeat=\"type in db.types\">\n" +
-    "                        {{type.type}}\n" +
-    "                        <span ng-hide=\"$index == db.types.length-1\">\n" +
-    "                            <small><span class=\"fa fa-fw fa-ellipsis-h\"></span></small>\n" +
-    "                        </span>\n" +
-    "                    </small>\n" +
-    "                </p>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-md-1\">\n" +
-    "            </div>\n" +
-    "        </div>\n" +
+    "        </form>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-12\" ng-show=\"db.show\">\n" +
-    "        <div class=\"col-md-2 form-group\" ng-show=\"db.publisher\">\n" +
-    "            <label for=\"{{db.id}}_Publisher\">Publisher</label>\n" +
-    "            <p id=\"{{db.id}}_Publisher\">{{db.publisher}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\" ng-show=\"db.location && db.location != 'UA, Remote'\">\n" +
-    "            <label for=\"{{db.id}}_Location\">Location</label>\n" +
-    "            <p id=\"{{db.id}}_Location\">{{db.location}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\">\n" +
-    "            <label for=\"{{db.id}}_NotInEDS\">Scout Availability</label>\n" +
-    "            <p id=\"{{db.id}}_NotInEDS\">\n" +
-    "                <span ng-show=\"db.notInEDS\">Not Available</span>\n" +
-    "                <span ng-hide=\"db.notInEDS\">Available</span>\n" +
-    "            </p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\">\n" +
-    "            <label for=\"{{db.id}}_Full-text\">Fulltext</label>\n" +
-    "            <p id=\"{{db.id}}_Full-text\">{{db.hasFullText}}<span ng-hide=\"db.hasFullText\">No</span></p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\" ng-show=\"db.presentedBy\">\n" +
-    "            <label for=\"{{db.id}}_presented\">Presented by</label>\n" +
-    "            <p id=\"{{db.id}}_presented\">{{db.presentedBy}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-2 form-group\" ng-show=\"db.audience1 || db.audience2\">\n" +
-    "            <label for=\"{{db.id}}_Audience1\">Audience</label>\n" +
-    "            <p id=\"{{db.id}}_Audience1\">{{db.audience1}} <span ng-show=\"db.audience2\">, {{db.audience2}}</span></p>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>\n" +
-    "<div class=\"text-center\">\n" +
-    "    <pagination total-items=\"filteredDB.length\" ng-model=\"currentPage\" max-size=\"maxPageSize\" class=\"pagination-sm\"\n" +
-    "                boundary-links=\"true\" rotate=\"false\" items-per-page=\"perPage\"></pagination>\n" +
-    "</div>\n" +
+    "    <div class=\"col-md-9 col-md-pull-3 dbware-list-container\">\n" +
+    "        <!--<div class=\"text-center\">\n" +
+    "            <pagination total-items=\"totalItems\" ng-model=\"db.page\" max-size=\"10\" class=\"pagination-sm\" boundary-links=\"true\" items-per-page=\"db.perPage\" ng-change=\"update()\" ng-if=\"filteredDB.length > db.perPage\"></pagination>\n" +
+    "        </div>-->\n" +
     "\n" +
-    "");
-}]);
-
-angular.module("dbList/dbListMain.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("dbList/dbListMain.tpl.html",
-    "<div databases-list></div>\n" +
-    "");
+    "        <div class=\"media\" ng-repeat=\"item in filteredDB | limitTo:20\">\n" +
+    "            <div class=\"media-body\">\n" +
+    "                <h4 class=\"media-heading\">\n" +
+    "                    <a ng-href=\"{{DB_PROXY_PREPEND_URL}}{{item.url}}\" title=\"{{item.title}}\"> {{item.title}}</a>  <small>{{item.coverage}}</small>\n" +
+    "                </h4>\n" +
+    "                <div class=\"details-context\">\n" +
+    "                    <span ng-repeat=\"subj in item.subjects | where:{type:1}\">{{subj.subject}}</span>\n" +
+    "                </div>\n" +
+    "                <div class=\"details-context\">\n" +
+    "                    <span ng-repeat=\"type in item.types\">{{type.type}}</span>\n" +
+    "                </div>\n" +
+    "                <p>{{item.description}}</p>\n" +
+    "\n" +
+    "                <div class=\"details-context\">\n" +
+    "                    <span ng-if=\"item.audience1\">{{item.audience1}}</span>\n" +
+    "                    <span ng-if=\"item.audience2\">{{item.audience2}}</span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "\n" +
+    "        <div class=\"text-center\">\n" +
+    "            <pagination total-items=\"filteredDB.length\" ng-model=\"db.page\" max-size=\"10\" class=\"pagination-sm\" boundary-links=\"true\" items-per-page=\"db.perPage\" ng-change=\"update()\" ng-if=\"filteredDB.length > db.perPage\"></pagination>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>");
 }]);

@@ -1,23 +1,3 @@
-angular.module('ualib.databases', [
-    'ngRoute',
-    'ngResource',
-    'ngAnimate',
-    'ui.bootstrap',
-    'angular.filter',
-    'ualib.ui',
-    'databases.templates'
-])
-
-    .constant('DB_PROXY_PREPEND_URL', 'http://libdata.lib.ua.edu/login?url=');
-
-
-
-
-angular.module('ualib.databases')
-
-    .factory('dbFactory', ['$resource', function($resource){
-        return $resource('https://wwwdev2.lib.ua.edu/databases/api/:db');
-    }]);
 angular.module('ualib.databases')
 
     .config(['$routeProvider', function($routeProvider){

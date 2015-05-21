@@ -1,0 +1,24 @@
+.facets-form {
+  .facet-group{
+    max-height: 300px;
+    overflow-y: auto;
+
+    &.alphanum-group{
+      .btn-group{
+        text-align: center;
+        > .btn {
+          float: none;
+          padding: 3px 6px;
+          border-color: transparent;
+          color: #993333;
+          &:first-child {
+            &:not(:last-child):not(.dropdown-toggle){
+              border-bottom-right-radius: 0;
+              border-top-right-radius: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+<div class="page-header"><h1>Databases</h1></div>
+
+<div class="row">
+    <div class="col-md-3 col-md-push-9">
+        <form class="facets-form">
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="db.search" placeholder="Search databases">
+            </div>
+
+            <div class="form-group hidden-xs">
+                <h5>Title starts with</h5>
+                <div class="facet-group alphanum-group">
+                    <div class="btn-group">
+                        <label class="btn btn-default" ng-repeat="na in numAlpha" ng-model="db.startsWith" btn-radio="'{{na}}'" uncheckable>{{na}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group hidden-xs">
+                <h5>Subjects</h5>
+                <div class="facet-group">
+                    <div class="radio" ng-class="{'disabled': subj.disabled}" ng-repeat="subj in subjects">
+                        <label>
+                            <input type="checkbox" ng-model="db.subjects[subj.subject]" ng-disabled="subj.disabled">
+                            {{subj.subject}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group hidden-xs">
+                <h5>Types</h5>
+                <div class="facet-group">
+                    <div class="radio" ng-class="{'disabled': type.disabled}" ng-repeat="type in types">
+                        <label>
+                            <input type="checkbox" ng-model="db.types[type.type]"  ng-disabled="type.disabled">
+                            {{type.type}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-9 col-md-pull-3 dbware-list-container">
+        <!--<div class="text-center">
+            <pagination total-items="totalItems" ng-model="db.page" max-size="10" class="pagination-sm" boundary-links="true" items-per-page="db.perPage" ng-change="update()" ng-if="filteredDB.length > db.perPage"></pagination>
+        </div>-->
+
+        <div class="media" ng-repeat="item in filteredDB | limitTo:20">
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a ng-href="{{DB_PROXY_PREPEND_URL}}{{item.url}}" title="{{item.title}}"> {{item.title}}</a>  <small>{{item.coverage}}</small>
+                </h4>
+                <div class="details-context">
+                    <span ng-repeat="subj in item.subjects | where:{type:1}">{{subj.subject}}</span>
+                </div>
+                <div class="details-context">
+                    <span ng-repeat="type in item.types">{{type.type}}</span>
+                </div>
+                <p>{{item.description}}</p>
+
+                <div class="details-context">
+                    <span ng-if="item.audience1">{{item.audience1}}</span>
+                    <span ng-if="item.audience2">{{item.audience2}}</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="text-center">
+            <pagination total-items="filteredDB.length" ng-model="db.page" max-size="10" class="pagination-sm" boundary-links="true" items-per-page="db.perPage" ng-change="update()" ng-if="filteredDB.length > db.perPage"></pagination>
+        </div>
+    </div>
+</div>

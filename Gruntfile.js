@@ -1,4 +1,9 @@
 module.exports = function(grunt){
+    // Load all tasks
+    require('load-grunt-tasks')(grunt);
+    // Show elapsed time
+    require('time-grunt')(grunt);
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         html2js: {
@@ -23,10 +28,28 @@ module.exports = function(grunt){
                 options: {
                     process: true
                 }
+            }
+        },
+        less: {
+            dev: {
+                files: {
+                    'dist/databases.css': ['src/**/*.less']
+                },
+                options: {
+                    compress: false,
+                    // LESS source map
+                    // To enable, set sourceMap to true and update sourceMapRootpath based on your install
+                    sourceMap: true,
+                    sourceMapFilename: 'dist/<%= pkg.name %>.css.map'
+                }
             },
-            css: {
-                src: ['src/**/*.css'],
-                dest: 'dist/databases.css'
+            build: {
+                files: {
+                    'dist/databases.min.css': ['src/**/*.less']
+                },
+                options: {
+                    compress: true
+                }
             }
         },
       bump: {
@@ -49,9 +72,6 @@ module.exports = function(grunt){
       }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-html2js');
-    grunt.loadNpmTasks('grunt-bump');
 
-    grunt.registerTask('default', ['html2js', 'concat']);
+    grunt.registerTask('default', ['html2js', 'concat', 'less:dev']);
 };
