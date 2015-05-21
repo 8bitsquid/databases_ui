@@ -4,6 +4,7 @@ angular.module('ualib.databases', [
     'ngAnimate',
     'ui.bootstrap',
     'angular.filter',
+    'duScroll',
     'ualib.ui',
     'databases.templates'
 ])
@@ -28,7 +29,6 @@ angular.module('ualib.databases')
                     databaseList: function(dbFactory){
                         return dbFactory.get({db: 'all'})
                             .$promise.then(function(data){
-                                var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 
                                 return data;
                             }, function(data, status, headers, config) {
@@ -47,8 +47,9 @@ angular.module('ualib.databases')
             })
     }])
 
-    .controller('DatabasesListCtrl', ['$scope', 'databaseList', '$filter', function($scope, dbList, $filter){
+    .controller('DatabasesListCtrl', ['$scope', 'databaseList', '$filter' ,'$location' ,'$document', function($scope, dbList, $filter, $location, $document){
         var databases = [];
+
         $scope.numAlpha = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
         $scope.numAlpha.unshift('0-9');
 
@@ -57,23 +58,16 @@ angular.module('ualib.databases')
             $scope.subjects = data.subjects;
             $scope.types = data.types;
 
-            $scope.db = {
-                subjects: {},
-                types: {},
-                search: '',
-                startsWith: '',
-                page: 1,
-                perPage: 20
-            };
+            $scope.resetFilters();
+            paramsToScope();
 
             $scope.totalItems = data.totalRecords;
-            $scope.numPages = Math.ceil(data.totalRecords / $scope.db.perPage);
-
+            processStartsWith(databases);
             processFacets(databases);
         });
 
 
-        $scope.$watch('db', function(newVal, oldVal){
+        var filterWatcher = $scope.$watch('db', function(newVal, oldVal){
             var filtered = databases;
 
             filtered = $filter('orderBy')(filtered, function(item){
@@ -83,7 +77,7 @@ angular.module('ualib.databases')
             }, true);
 
             if (newVal.startsWith){
-                var sw = '^['+newVal.startsWith+']';
+                var sw = newVal.startsWith.indexOf('-') == -1 ? "^"+newVal.startsWith+".+$" : '^['+newVal.startsWith+'].+$';
                 filtered = $filter('filter')(filtered, function(item){
                     return $filter('test')(item.title, sw, 'i');
                 });
@@ -95,10 +89,17 @@ angular.module('ualib.databases')
             }
             filtered = $filter('orderBy')(filtered, 'title');
 
-            processFacets(filtered);
             $scope.filteredDB = filtered;
-            $scope.totalItems = $scope.filteredDB.length;
-            //$scope.numPages = Math.ceil($scope.totalItems / $scope.db.perpage);
+            $scope.pager.totalItems = $scope.filteredDB.length;
+            $scope.pager.page = 1;
+
+            var newParams = angular.extend({}, newVal, {page: $scope.pager.page});
+
+            processFacets(filtered);
+            scopeToParams(newParams);
+            if (newVal.startsWith === null || newVal.startsWith === ''){
+                processStartsWith(filtered);
+            }
 
         }, true);
 
@@ -128,6 +129,30 @@ angular.module('ualib.databases')
                 }).length === types.length;
         };
 
+        $scope.resetFilters = function(){
+            $scope.db = {
+                subjects: {},
+                types: {},
+                search: '',
+                startsWith: ''
+            };
+            $scope.pager = {
+                page: 1,
+                perPage: 20,
+                maxSize: 10,
+                totalItems: 0
+            };
+        };
+
+        $scope.pageChange = function(){
+            scopeToParams({page: $scope.pager.page});
+            $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1 });
+        };
+
+        $scope.$on('$destroy', function(){
+            filterWatcher();
+        });
+
         function processFacets(databases){
             var subjAvail = [];
             var typeAvail = [];
@@ -156,6 +181,70 @@ angular.module('ualib.databases')
                 var t = type;
                 t.disabled = typeAvail.indexOf(t.tid) == -1;
                 return t;
+            });
+        }
+
+        function processStartsWith(databases){
+            $scope.startsWithDisabled = {};
+
+            $scope.numAlpha.map(function(startsWith){
+                var sw = startsWith.indexOf('-') == -1 ? "^"+startsWith+".+$" : '^['+startsWith+'].+$';
+                for (var i = 0, len = databases.length; i < len; i++){
+                    if ($filter('test')(databases[i].title, sw, 'i')){
+                        return;
+                    }
+                }
+                $scope.startsWithDisabled[startsWith] = true;
+            });
+        }
+
+        function scopeToParams(scopeVals){
+            angular.forEach(scopeVals, function(val, key){
+                var newParam = {};
+
+                if (angular.isDefined(val) && val !== ''){
+                    if (angular.isObject(val)){
+                        val = Object.keys(val).filter(function(f){
+                            return val[f];
+                        }).join(",");
+                       if (val.length > 0){
+                           $location.search(key, val);
+                       }
+                       else{
+                           $location.search(key, null);
+                       }
+                    }
+                    else if (!(key === 'search' && val.length < 3)){
+                        $location.search(key, val);
+                    }
+                    else{
+                        $location.search(key, null);
+                    }
+                }
+                else{
+                    $location.search(key, null);
+                }
+            });
+        }
+
+        function paramsToScope(){
+            var params = $location.search();
+            angular.forEach(params, function(val, key){
+                if (key === 'page'){
+                    $scope.pager.page = val;
+                }
+                else {
+                    if (angular.isDefined(val) && val !== ''){
+                        if (key == 'subjects' || key == 'types'){
+                            var filters = {};
+                            val.split(',').forEach(function(filter){
+                                filters[filter] = true;
+                            });
+                            val = filters;
+                        }
+                        $scope.db[key] = val;
+                    }
+                }
             });
         }
     }]);

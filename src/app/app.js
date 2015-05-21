@@ -4,6 +4,7 @@ angular.module('ualib.databases', [
     'ngAnimate',
     'ui.bootstrap',
     'angular.filter',
+    'duScroll',
     'ualib.ui',
     'databases.templates'
 ])
