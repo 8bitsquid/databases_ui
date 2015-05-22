@@ -3,7 +3,6 @@ angular.module('ualib.databases')
     .config(['$routeProvider', function($routeProvider){
         $routeProvider
             .when('/databases', {
-                reloadOnSearch: false,
                 resolve: {
                     databaseList: function(dbFactory){
                         return dbFactory.get({db: 'all'})
@@ -26,7 +25,7 @@ angular.module('ualib.databases')
             })
     }])
 
-    .controller('DatabasesListCtrl', ['$scope', 'databaseList', '$filter' ,'$location' ,'$document', function($scope, dbList, $filter, $location, $document){
+    .controller('DatabasesListCtrl', ['$scope', 'databaseList', '$filter' ,'$location' ,'$document', '$route', function($scope, dbList, $filter, $location, $document, $route){
         var databases = [];
 
         $scope.numAlpha = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
@@ -41,7 +40,7 @@ angular.module('ualib.databases')
             paramsToScope();
 
             $scope.totalItems = data.totalRecords;
-            processStartsWith(databases);
+            //processStartsWith(databases);
             processFacets(databases);
         });
 
@@ -70,15 +69,19 @@ angular.module('ualib.databases')
 
             $scope.filteredDB = filtered;
             $scope.pager.totalItems = $scope.filteredDB.length;
-            $scope.pager.page = 1;
+            //$scope.pager.page = 1;
+            var numPages =  Math.floor($scope.pager.totalItems / $scope.pager.maxSize);
+            if (numPages < $scope.pager.page){
+                $scope.pager.page = numPages || 1;
+            }
 
             var newParams = angular.extend({}, newVal, {page: $scope.pager.page});
 
             processFacets(filtered);
             scopeToParams(newParams);
-            if (newVal.startsWith === null || newVal.startsWith === ''){
+            /*if (newVal.startsWith === null || newVal.startsWith === ''){
                 processStartsWith(filtered);
-            }
+            }*/
 
         }, true);
 
@@ -124,6 +127,7 @@ angular.module('ualib.databases')
         };
 
         $scope.pageChange = function(){
+
             scopeToParams({page: $scope.pager.page});
             $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1 });
         };
@@ -134,31 +138,45 @@ angular.module('ualib.databases')
 
         function processFacets(databases){
             var subjAvail = [];
+            var subjCount = {};
+
             var typeAvail = [];
+            var typeCount = {};
+
+            $location.replace();
 
             for (var i = 0, len = databases.length; i < len; i++){
                 databases[i].subjects.map(function(subj){
                     if (subjAvail.indexOf(subj.sid) == -1){
                         subjAvail.push(subj.sid);
+                        subjCount[subj.sid] = 1;
+                    }
+                    else{
+                        subjCount[subj.sid]++;
                     }
                 });
                 databases[i].types.map(function(type){
                     if (typeAvail.indexOf(type.tid) == -1){
                         typeAvail.push(type.tid);
+                        typeCount[type.tid] = 1;
+                    }
+                    else{
+                        typeCount[type.tid]++;
                     }
                 });
-
             }
 
             $scope.subjects.map(function(subject){
                 var s = subject;
                 s.disabled = subjAvail.indexOf(s.sid) == -1;
+                s.total = subjCount[subject.sid] || 0;
                 return s;
             });
 
             $scope.types.map(function(type){
                 var t = type;
                 t.disabled = typeAvail.indexOf(t.tid) == -1;
+                t.total = typeCount[type.tid] || 0;
                 return t;
             });
         }
@@ -208,6 +226,7 @@ angular.module('ualib.databases')
 
         function paramsToScope(){
             var params = $location.search();
+            $scope.activeFilters = params;
             angular.forEach(params, function(val, key){
                 if (key === 'page'){
                     $scope.pager.page = val;

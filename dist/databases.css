@@ -1,3 +1,17 @@
+.databases-list-container .breadcrumb .btn-default {
+  padding: 2px 6px;
+  background-color: transparent;
+  border: none;
+}
+.databases-list-container .breadcrumb .btn-default:hover,
+.databases-list-container .breadcrumb .btn-default:active {
+  background-color: #e6e6e6;
+}
+.databases-list-container .breadcrumb .btn-default > span {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
 .facets-form .facet-group {
   max-height: 300px;
   overflow-y: auto;
