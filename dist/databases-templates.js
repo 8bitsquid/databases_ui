@@ -55,15 +55,21 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "    </div>\n" +
     "    <div class=\"col-md-9 col-md-pull-3 databases-list-container\">\n" +
     "        <p>\n" +
-    "        Showing {{pager.page}}-{{pager.page*pager.perPage}} of {{pager.totalItems}} results\n" +
-    "        <ol class=\"breadcrumb\" ng-if=\"activeFilters.startsWith || activeFilters.subjects || activeFilters.types\">\n" +
+    "        Showing {{pager.firstItem}}-{{pager.lastItem}} of {{pager.totalItems}} results\n" +
+    "        <div ng-if=\"activeFilters.startsWith || activeFilters.subjects || activeFilters.types\">\n" +
+    "\n" +
+    "        <ol class=\"breadcrumb\">\n" +
     "            <li ng-if=\"activeFilters.startsWith\"><strong>Starts with:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.startsWith = ''\">\"{{db.startsWith}}\" <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li ng-if=\"activeFilters.subjects\"><strong>Subjects:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.subjects[subject] = false\" ng-repeat=\"(subject, key) in db.subjects\">{{subject}} <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li ng-if=\"activeFilters.types\"><strong>Types:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.types[type] = false\" ng-repeat=\"(type, key) in db.types\">{{type}} <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
+    "            <li class=\"pull-right\"><button type=\"button\" style=\"padding: 2px 6px;\" class=\"btn btn-primary btn-small\" title=\"Reset filters\" ng-click=\"resetFilters()\"><i class=\"fa fa-refresh\"></i></button></li>\n" +
     "        </ol>\n" +
+    "        </div>\n" +
+    "\n" +
+    "\n" +
     "        </p>\n" +
     "\n" +
-    "        <div class=\"media\" ng-repeat=\"item in filteredDB | filter:{disabled: 0} | after:(pager.page-1)*pager.perPage | limitTo:20\">\n" +
+    "        <div class=\"media\" ng-repeat=\"item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20\">\n" +
     "            <div class=\"media-body\">\n" +
     "                <h4 class=\"media-heading\">\n" +
     "                    <a ng-href=\"{{DB_PROXY_PREPEND_URL}}{{item.url}}\" title=\"{{item.title}}\"> {{item.title}}</a>\n" +
