@@ -67,19 +67,27 @@
 
         <div class="media" ng-repeat="item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20">
             <div class="media-body">
-                <h4 class="media-heading">
-                    <a ng-href="{{DB_PROXY_PREPEND_URL}}{{item.url}}" title="{{item.title}}"> {{item.title}}</a>
-                    <!--<small ng-if="item.presentedBy">({{item.presentedBy}})</small>-->
-                    <small>{{item.coverage}}</small>
-                    <small>
-                        <span class="label label-success" ng-if="item.hasFullText == 'A'">All Full Text</span>
-                        <span class="label label-info" ng-if="item.hasFullText == 'P'">Primarily Full Text</span>
-                        <span class="label label-warning" ng-if="item.hasFullText == 'S'">Some Full Text</span>
-                        <span class="label label-danger" ng-if="item.hasFullText == 'N'">No Full Text</span>
-                    </small>
-                </h4>
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="media-heading">
+                            <a ng-href="{{DB_PROXY_PREPEND_URL}}{{item.url}}" title="{{item.title}}"> {{item.title}}</a>
+                            <!--<small ng-if="item.presentedBy">({{item.presentedBy}})</small>-->
+                            <small>{{item.coverage}}</small>
+                        </h4>
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <h4 class="media-heading">
+                            <small>
+                                <span class="label label-success" ng-if="item.hasFullText == 'A'">All Full Text</span>
+                                <span class="label label-info" ng-if="item.hasFullText == 'P'">Primarily Full Text</span>
+                                <span class="label label-warning" ng-if="item.hasFullText == 'S'">Some Full Text</span>
+                                <span class="label label-danger" ng-if="item.hasFullText == 'N'">No Full Text</span>
+                            </small>
+                        </h4>
+                    </div>
+                </div>
 
-                <p>{{item.description}}</p>
+                <p style="text-align: justify;">{{item.description}}</p>
 
 
                 <div ng-if="item.location">

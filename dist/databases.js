@@ -240,10 +240,6 @@ angular.module('ualib.databases')
                 var newParam = {};
 
                 if (angular.isDefined(val) && val !== ''){
-                    console.log({
-                        key: key,
-                        val: val
-                    });
                     if (angular.isObject(val)){
                         val = Object.keys(val).filter(function(f){
                             return val[f];
