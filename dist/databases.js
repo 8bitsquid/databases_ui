@@ -2,7 +2,9 @@ angular.module('ualib.databases', [
     'ngRoute',
     'ngResource',
     'ngAnimate',
+    'ngSanitize',
     'ui.bootstrap',
+    'ui.utils',
     'angular.filter',
     'duScroll',
     'ualib.ui',
@@ -16,8 +18,47 @@ angular.module('ualib.databases', [
 
 angular.module('ualib.databases')
 
-    .factory('databasesFactory', ['$resource', function($resource){
-        return $resource('https://wwwdev2.lib.ua.edu/databases/api/:db');
+/**
+ * Transform the JSON response - this allows the transformed values to be cached via Angular's $resource service.
+ */
+    .factory('databasesFactory', ['$resource', '$filter', 'DB_PROXY_PREPEND_URL', function($resource, $filter, DB_PROXY_PREPEND_URL){
+        return $resource('https://wwwdev2.lib.ua.edu/databases/api/:db', {db: 'all'}, {
+            cache: true,
+            get: {
+                method: 'GET',
+                transformResponse: function(data){
+                    var db = angular.fromJson(data);
+                    //Pre sort databases by title
+                    var databases = $filter('orderBy')(db.databases, 'title');
+                    // Set position for stable sort
+                    angular.forEach(databases, function(db, i){
+                        var access;
+                        switch (databases[i].location){
+                            case 'UA':
+                                access = 'On campus only';
+                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
+                                break;
+                            case 'UA, Remote':
+                                access = 'myBama login required off campus';
+                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
+                                break;
+                            case 'www':
+                            case 'WWW':
+                                access = false;
+                                break;
+                            default:
+                                access = databases[i].location;
+                        }
+                        databases[i].access = access;
+                        databases[i].position = i;
+                        databases[i].inScout = databases[i].notInEDS === 'Y';
+
+                    });
+                    db.databases = databases;
+                    return db;
+                }
+            }
+        });
     }]);
 angular.module('ualib.databases')
 
@@ -29,7 +70,6 @@ angular.module('ualib.databases')
                     databases: function(databasesFactory){
                         return databasesFactory.get({db: 'all'})
                             .$promise.then(function(data){
-
                                 return data;
                             }, function(data, status, headers, config) {
                                 console.log('ERROR: databases');
@@ -47,7 +87,7 @@ angular.module('ualib.databases')
             })
     }])
 
-    .controller('DatabasesListCtrl', ['$scope', 'databases', '$filter' ,'$location' ,'$document', '$route', function($scope, db, $filter, $location, $document, $route){
+    .controller('DatabasesListCtrl', ['$scope', 'databases', '$filter' ,'$location' ,'$document', function($scope, db, $filter, $location, $document){
         var databases = [];
 
         $scope.numAlpha = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
@@ -55,6 +95,7 @@ angular.module('ualib.databases')
 
         db.$promise.then(function(data){
             databases = data.databases;
+
             $scope.subjects = data.subjects;
             $scope.types = data.types;
 
@@ -76,22 +117,16 @@ angular.module('ualib.databases')
             filtered = $filter('filter')(filtered, filterBySubject);
             filtered = $filter('filter')(filtered, filterByType);
 
-            if (newVal.search.length > 2){
+            if (newVal.search && newVal.search.length > 2){
                 filtered = $filter('filter')(filtered, newVal.search);
             }
 
             if (newVal.startsWith){
                 var sw = newVal.startsWith.indexOf('-') == -1 ? "^"+newVal.startsWith+".+$" : '^['+newVal.startsWith+'].+$';
+
                 filtered = $filter('filter')(filtered, function(item){
                     return $filter('test')(item.title, sw, 'i');
                 });
-            }
-
-            filtered = $filter('orderBy')(filtered, 'title');
-
-            // Set position for stable sort
-            for (var i = 0, len = filtered.length; i < len; i++){
-                filtered[i].position = i;
             }
 
             filtered.sort(function(a, b){
@@ -107,11 +142,10 @@ angular.module('ualib.databases')
                 return 1;
             });
 
-
             $scope.filteredDB = filtered;
             $scope.pager.totalItems = $scope.filteredDB.length;
             $scope.pager.firstItem = (($scope.pager.page-1)*$scope.pager.perPage)+1;
-            $scope.pager.lastItem = $scope.pager.page*($scope.pager.totalItems < $scope.pager.mazSize ? $scope.pager.totalItems : $scope.pager.perPage);
+            $scope.pager.lastItem = $scope.pager.page*($scope.pager.totalItems < $scope.pager.maxSize ? $scope.pager.totalItems : $scope.pager.perPage);
             var numPages =  Math.floor($scope.pager.totalItems / $scope.pager.maxSize);
             if (numPages < $scope.pager.page){
                 $scope.pager.page = numPages || 1;
@@ -121,8 +155,6 @@ angular.module('ualib.databases')
 
             processFacets(filtered);
             scopeToParams(newParams);
-
-
         }, true);
 
 
@@ -266,7 +298,9 @@ angular.module('ualib.databases')
 
         function paramsToScope(){
             var params = $location.search();
-            var scopeFacets = $scope.db;
+            var scopeFacets = {};
+            angular.copy($scope.db, scopeFacets);
+            console.log(params);
             $scope.activeFilters = params;
 
             if (params['page']){
@@ -274,21 +308,25 @@ angular.module('ualib.databases')
             }
 
             angular.forEach(scopeFacets, function(val, key){
+
                 if (angular.isDefined(params[key])){
-                    if (key == 'subjects' || key == 'types' && val){
+
+                    if (key == 'subjects' || key == 'types'){
                         var filters = {};
                         params[key].split(',').forEach(function(filter){
                             filters[filter] = true;
                         });
-                        val = filters;
+                        scopeFacets[key] = filters;
                     }
-                    scopeFacets[key] = val;
+                    else{
+                        scopeFacets[key] = params[key];
+                    }
                 }
                 else{
                     scopeFacets[key] = angular.isObject(val) ? {} : '';
                 }
             });
-            $scope.db = scopeFacets
+            $scope.db = scopeFacets;
             /*angular.forEach(params, function(val, key){
                 if (key === 'page'){
                     $scope.pager.page = val;

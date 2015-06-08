@@ -55,14 +55,14 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "    </div>\n" +
     "    <div class=\"col-md-9 col-md-pull-3 databases-list-container\">\n" +
     "        <p>\n" +
-    "        Showing {{pager.firstItem}}-{{pager.lastItem}} of {{pager.totalItems}} results\n" +
+    "        <h4 class=\"text-right\">Showing {{pager.firstItem}} - {{pager.lastItem}} of {{pager.totalItems}} results</h4>\n" +
     "        <div ng-if=\"activeFilters.startsWith || activeFilters.subjects || activeFilters.types\">\n" +
     "\n" +
-    "        <ol class=\"breadcrumb\">\n" +
+    "        <ol class=\"breadcrumb facetcrumb\">\n" +
     "            <li ng-if=\"activeFilters.startsWith\"><strong>Starts with:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.startsWith = ''\">\"{{db.startsWith}}\" <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li ng-if=\"activeFilters.subjects\"><strong>Subjects:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.subjects[subject] = false\" ng-repeat=\"(subject, key) in db.subjects\">{{subject}} <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li ng-if=\"activeFilters.types\"><strong>Types:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.types[type] = false\" ng-repeat=\"(type, key) in db.types\">{{type}} <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
-    "            <li class=\"pull-right\"><button type=\"button\" style=\"padding: 2px 6px;\" class=\"btn btn-primary btn-small\" title=\"Reset filters\" ng-click=\"resetFilters()\"><i class=\"fa fa-refresh\"></i></button></li>\n" +
+    "            <li class=\"pull-right\"><button type=\"button\" class=\"btn btn-primary btn-small reset-btn\" title=\"Reset filters\" ng-click=\"resetFilters()\"><i class=\"fa fa-refresh\"></i></button></li>\n" +
     "        </ol>\n" +
     "        </div>\n" +
     "\n" +
@@ -71,37 +71,33 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "\n" +
     "        <div class=\"media\" ng-repeat=\"item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20\">\n" +
     "            <div class=\"media-body\">\n" +
-    "                <div class=\"row\">\n" +
-    "                    <div class=\"col-md-10\">\n" +
-    "                        <h4 class=\"media-heading\">\n" +
-    "                            <a ng-href=\"{{DB_PROXY_PREPEND_URL}}{{item.url}}\" title=\"{{item.title}}\"> {{item.title}}</a>\n" +
-    "                            <!--<small ng-if=\"item.presentedBy\">({{item.presentedBy}})</small>-->\n" +
-    "                            <small>{{item.coverage}}</small>\n" +
-    "                        </h4>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"col-md-2 text-right\">\n" +
-    "                        <h4 class=\"media-heading\">\n" +
-    "                            <small>\n" +
-    "                                <span class=\"label label-success\" ng-if=\"item.hasFullText == 'A'\">All Full Text</span>\n" +
-    "                                <span class=\"label label-info\" ng-if=\"item.hasFullText == 'P'\">Primarily Full Text</span>\n" +
-    "                                <span class=\"label label-warning\" ng-if=\"item.hasFullText == 'S'\">Some Full Text</span>\n" +
-    "                                <span class=\"label label-danger\" ng-if=\"item.hasFullText == 'N'\">No Full Text</span>\n" +
-    "                            </small>\n" +
-    "                        </h4>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
     "\n" +
-    "                <p style=\"text-align: justify;\">{{item.description}}</p>\n" +
+    "                <h4 class=\"media-heading\">\n" +
+    "                    <a ng-href=\"{{DB_PROXY_PREPEND_URL}}{{item.url}}\" title=\"{{item.title}}\" ng-bind-html=\"item.title | highlight:db.search\"></a>\n" +
+    "                    <!--<small ng-if=\"item.presentedBy\">({{item.presentedBy}})</small>-->\n" +
+    "                    <small ng-bind-html=\"item.coverage | highlight:db.search\"></small>\n" +
+    "\n" +
+    "                    <small class=\"pull-right\">\n" +
+    "                        <span class=\"label label-success\" ng-if=\"item.hasFullText == 'A'\">All Full Text</span>\n" +
+    "                        <span class=\"label label-info\" ng-if=\"item.hasFullText == 'P'\">Primarily Full Text</span>\n" +
+    "                        <span class=\"label label-warning\" ng-if=\"item.hasFullText == 'S'\">Some Full Text</span>\n" +
+    "                        <span class=\"label label-danger\" ng-if=\"item.hasFullText == 'N'\">No Full Text</span>\n" +
+    "                    </small>\n" +
+    "                </h4>\n" +
+    "\n" +
+    "                <p class=\"text-justify\" ng-bind-html=\"item.description | highlight:db.search\"></p>\n" +
     "\n" +
     "\n" +
     "                <div ng-if=\"item.location\">\n" +
     "                    <strong>Access:</strong> {{item.location}}\n" +
     "                </div>\n" +
-    "                <div ng-if=\"(item.subjects | where:{type:1}).length > 0\">\n" +
-    "                    <strong>Primary subjects: </strong><span ng-repeat=\"subj in item.subjects | where:{type:1}\">{{subj.subject}}</span>\n" +
+    "                <div class=\"databases-details\" ng-if=\"(item.subjects | where:{type:1}).length > 0\">\n" +
+    "                    <strong>Primary subjects: </strong>\n" +
+    "                    <span ng-repeat=\"subj in item.subjects | where:{type:1}\" ng-bind-html=\"subj.subject | highlight:db.search\"></span>\n" +
     "                </div>\n" +
-    "                <div ng-if=\"item.types\">\n" +
-    "                    <strong>Types of material: </strong><span ng-repeat=\"type in item.types\">{{type.type}}</span>\n" +
+    "                <div class=\"databases-details\" ng-if=\"item.types\">\n" +
+    "                    <strong>Types of material: </strong>\n" +
+    "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | highlight:db.search\"></span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +

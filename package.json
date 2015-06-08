@@ -1,6 +1,6 @@
 {
   "name": "databases-ui",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "deDependencies": {
     "grunt": "~0.4.5"
   },
