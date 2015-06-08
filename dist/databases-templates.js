@@ -87,7 +87,6 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "\n" +
     "                <p class=\"text-justify\" ng-bind-html=\"item.description | highlight:db.search\"></p>\n" +
     "\n" +
-    "\n" +
     "                <div ng-if=\"item.location\">\n" +
     "                    <strong>Access:</strong> {{item.location}}\n" +
     "                </div>\n" +

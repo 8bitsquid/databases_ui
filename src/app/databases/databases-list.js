@@ -55,9 +55,9 @@ angular.module('ualib.databases')
             filtered = $filter('filter')(filtered, filterBySubject);
             filtered = $filter('filter')(filtered, filterByType);
 
-            if (newVal.search && newVal.search.length > 2){
+            //if (newVal.search && newVal.search.length > 2){
                 filtered = $filter('filter')(filtered, newVal.search);
-            }
+            //}
 
             if (newVal.startsWith){
                 var sw = newVal.startsWith.indexOf('-') == -1 ? "^"+newVal.startsWith+".+$" : '^['+newVal.startsWith+'].+$';
@@ -221,12 +221,15 @@ angular.module('ualib.databases')
                            $location.search(key, null);
                        }
                     }
-                    else if (!(key === 'search' && val.length < 3)){
+                    else {
+                        $location.search(key, val);
+                    }
+                    /*else if (!(key === 'search' && val.length < 3)){
                         $location.search(key, val);
                     }
                     else{
                         $location.search(key, null);
-                    }
+                    }*/
                 }
                 else{
                     $location.search(key, null);
@@ -290,29 +293,6 @@ angular.module('ualib.databases')
                     }
                 }
             });*/
-        }
-
-        // Adopted from http://stackoverflow.com/questions/4994201/is-object-empty
-        var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-        function facetsActive(obj) {
-
-            // null and undefined are "empty"
-            if (obj == null) return true;
-
-            // Assume if it has a length property with a non-zero value
-            // that that property is correct.
-            if (obj.length > 0)    return false;
-            if (obj.length === 0)  return true;
-
-            // Otherwise, does it have any properties of its own? And are those properties "truthy"
-            // Note that this doesn't handle
-            // toString and valueOf enumeration bugs in IE < 9
-            for (var key in obj) {
-                if (hasOwnProperty.call(obj, key) && key) return true;
-            }
-
-            return false;
         }
 
     }]);
