@@ -1,7 +1,36 @@
-.databases-details {
+.databases-details{
   > span:not(:last-of-type){
     &:after {
       content: '; ';
     }
+  }
+}
+
+.scout-coverage {
+
+  .fa-stack {
+    width: 1em;
+    line-height: 1.8em;
+    margin-left: .2em;
+  }
+
+  .half-scout {
+
+    .fa-circle {
+      overflow: hidden;
+      width: 7px;
+      padding-left: 1px;
+      display: inline-block;
+    }
+  }
+
+  .full-scout {
+    .fa-circle {
+      display: inline-block;
+    }
+  }
+
+  .fa-circle {
+    display: none;
   }
 }

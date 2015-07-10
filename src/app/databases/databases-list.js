@@ -28,6 +28,7 @@ angular.module('ualib.databases')
     .controller('DatabasesListCtrl', ['$scope', 'databases', '$filter' ,'$location' ,'$document', function($scope, db, $filter, $location, $document){
         var databases = [];
 
+
         $scope.numAlpha = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
         $scope.numAlpha.unshift('0-9');
 
@@ -54,6 +55,7 @@ angular.module('ualib.databases')
 
             filtered = $filter('filter')(filtered, filterBySubject);
             filtered = $filter('filter')(filtered, filterByType);
+
 
             //if (newVal.search && newVal.search.length > 2){
                 filtered = $filter('filter')(filtered, newVal.search);

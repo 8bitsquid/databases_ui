@@ -56,10 +56,10 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "    <div class=\"col-md-9 col-md-pull-3 databases-list-container\">\n" +
     "        <p>\n" +
     "        <h4 class=\"text-right\">Showing {{pager.firstItem}} - {{pager.lastItem}} of {{pager.totalItems}} results</h4>\n" +
-    "        <div ng-if=\"activeFilters.startsWith || activeFilters.subjects || activeFilters.types\">\n" +
+    "        <div ng-if=\"!!activeFilters.startsWith || activeFilters.subjects || activeFilters.types\">\n" +
     "\n" +
     "        <ol class=\"breadcrumb facetcrumb\">\n" +
-    "            <li ng-if=\"activeFilters.startsWith\"><strong>Starts with:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.startsWith = ''\">\"{{db.startsWith}}\" <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
+    "            <li ng-if=\"!!activeFilters.startsWith\"><strong>Starts with:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.startsWith = ''\">\"{{db.startsWith}}\" <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li ng-if=\"activeFilters.subjects\"><strong>Subjects:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.subjects[subject] = false\" ng-repeat=\"(subject, key) in db.subjects\">{{subject}} <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li ng-if=\"activeFilters.types\"><strong>Types:</strong> <button type=\"button\" class=\"btn btn-default\" ng-click=\"db.types[type] = false\" ng-repeat=\"(type, key) in db.types\">{{type}} <span class=\"text-muted\" aria-hidden=\"true\">&times;</span></button></li>\n" +
     "            <li class=\"pull-right\"><button type=\"button\" class=\"btn btn-primary btn-small reset-btn\" title=\"Reset filters\" ng-click=\"resetFilters()\"><i class=\"fa fa-refresh\"></i></button></li>\n" +
@@ -69,7 +69,7 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "\n" +
     "        </p>\n" +
     "\n" +
-    "        <div class=\"media\" ng-repeat=\"item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20\">\n" +
+    "        <div class=\"media animate-repeat\" ng-repeat=\"item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20\">\n" +
     "            <div class=\"media-body\">\n" +
     "\n" +
     "                <h4 class=\"media-heading\">\n" +
@@ -97,6 +97,16 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "                <div class=\"databases-details\" ng-if=\"item.types\">\n" +
     "                    <strong>Types of material: </strong>\n" +
     "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | highlight:db.search\"></span>\n" +
+    "                </div>\n" +
+    "                <div class=\"scout-coverage\">\n" +
+    "                    <strong>Scout coverage: </strong>\n" +
+    "                    <span class=\"fa-stack coverage\" ng-class=\"{'full-scout text-success': item.notInEDS == 'Y', 'half-scout text-warning': item.notInEDS == 'P', 'empty-scout text-danger': !item.notInEDS}\">\n" +
+    "                        <span class=\"fa fa-circle-o fa-stack-1x\"></span>\n" +
+    "                        <span class=\"fa fa-circle fa-stack-1x\"></span>\n" +
+    "                    </span>\n" +
+    "                    <span class=\"text-success\" ng-if=\"item.notInEDS == 'Y'\">Full</span>\n" +
+    "                    <span class=\"text-warning\" ng-if=\"item.notInEDS == 'P'\">Partial</span>\n" +
+    "                    <span class=\"text-danger\" ng-if=\"!item.notInEDS\">Not in Scout</span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +

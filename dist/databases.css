@@ -1,6 +1,23 @@
 .databases-details > span:not(:last-of-type):after {
   content: '; ';
 }
+.scout-coverage .fa-stack {
+  width: 1em;
+  line-height: 1.8em;
+  margin-left: .2em;
+}
+.scout-coverage .half-scout .fa-circle {
+  overflow: hidden;
+  width: 7px;
+  padding-left: 1px;
+  display: inline-block;
+}
+.scout-coverage .full-scout .fa-circle {
+  display: inline-block;
+}
+.scout-coverage .fa-circle {
+  display: none;
+}
 /*# sourceMappingURL=dist/databases-ui.css.map */
 .breadcrumb.facetcrumb .btn-default {
   padding: 2px 6px;
