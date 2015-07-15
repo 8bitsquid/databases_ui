@@ -100,13 +100,11 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "                </div>\n" +
     "                <div class=\"scout-coverage\">\n" +
     "                    <strong>Scout coverage: </strong>\n" +
-    "                    <span class=\"fa-stack coverage\" ng-class=\"{'full-scout text-success': item.notInEDS == 'Y', 'half-scout text-warning': item.notInEDS == 'P', 'empty-scout text-danger': !item.notInEDS}\">\n" +
-    "                        <span class=\"fa fa-circle-o fa-stack-1x\"></span>\n" +
-    "                        <span class=\"fa fa-circle fa-stack-1x\"></span>\n" +
+    "                    <span class=\"fa text-info\" ng-class=\"{'fa-circle': item.notInEDS == 'Y', 'fa-adjust': item.notInEDS == 'P', 'fa-circle-o': !item.notInEDS}\">\n" +
     "                    </span>\n" +
-    "                    <span class=\"text-success\" ng-if=\"item.notInEDS == 'Y'\">Full</span>\n" +
-    "                    <span class=\"text-warning\" ng-if=\"item.notInEDS == 'P'\">Partial</span>\n" +
-    "                    <span class=\"text-danger\" ng-if=\"!item.notInEDS\">Not in Scout</span>\n" +
+    "                    <span ng-if=\"item.notInEDS == 'Y'\">Full</span>\n" +
+    "                    <span  ng-if=\"item.notInEDS == 'P'\">Partial</span>\n" +
+    "                    <span  ng-if=\"!item.notInEDS\">Not in Scout</span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
