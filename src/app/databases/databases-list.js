@@ -297,6 +297,22 @@ angular.module('ualib.databases')
             });*/
         }
 
-    }]);
-
+    }])
+    .filter('customHighlight', function($sce) {
+        return function(text, filterPhrase) {
+            if (filterPhrase) {
+                var tag_re = /(<a\/?[^>]+>)/g;
+                var filter_re = new RegExp('(' + filterPhrase + ')', 'gi');
+                text = text.split(tag_re).map(function(string) {
+                    if (string.match(tag_re)) {
+                        return string;
+                    } else {
+                        return string.replace(filter_re,
+                            '<span class="ui-match">$1</span>');
+                    }
+                }).join('');
+            }
+            return $sce.trustAsHtml(text);
+        };
+    });
 
