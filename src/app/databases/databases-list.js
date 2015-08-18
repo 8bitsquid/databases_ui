@@ -6,7 +6,7 @@ angular.module('ualib.databases')
                 reloadOnSearch: false,
                 resolve: {
                     databases: function(databasesFactory){
-                        return databasesFactory.get({db: 'all'})
+                        return databasesFactory.get({db: 'active'})
                             .$promise.then(function(data){
                                 return data;
                             }, function(data, status, headers, config) {
