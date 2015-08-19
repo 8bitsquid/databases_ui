@@ -48,11 +48,9 @@ angular.module('ualib.databases')
                         switch (databases[i].location){
                             case 'UA':
                                 access = 'On campus only';
-                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                                 break;
                             case 'UA, Remote':
                                 access = 'myBama login required off campus';
-                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                                 break;
                             case 'www':
                             case 'WWW':
@@ -61,6 +59,8 @@ angular.module('ualib.databases')
                             default:
                                 access = databases[i].location;
                         }
+                        if (databases[i].auth === "1")
+                            databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                         databases[i].access = access;
                         databases[i].position = i;
                         databases[i].inScout = databases[i].notInEDS === 'Y';
@@ -372,7 +372,7 @@ angular.module('ualib.databases')
         }
 
     }])
-    .filter('customHighlight', function($sce) {
+    .filter('customHighlight',['$sce', function($sce) {
         return function(text, filterPhrase) {
             if (filterPhrase) {
                 var tag_re = /(<a\/?[^>]+>)/g;
@@ -388,5 +388,5 @@ angular.module('ualib.databases')
             }
             return $sce.trustAsHtml(text);
         };
-    });
+    }]);
 

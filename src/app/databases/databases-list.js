@@ -298,7 +298,7 @@ angular.module('ualib.databases')
         }
 
     }])
-    .filter('customHighlight', function($sce) {
+    .filter('customHighlight',['$sce', function($sce) {
         return function(text, filterPhrase) {
             if (filterPhrase) {
                 var tag_re = /(<a\/?[^>]+>)/g;
@@ -314,5 +314,5 @@ angular.module('ualib.databases')
             }
             return $sce.trustAsHtml(text);
         };
-    });
+    }]);
 
