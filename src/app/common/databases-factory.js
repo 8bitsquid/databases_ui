@@ -11,17 +11,18 @@ angular.module('ualib.databases')
 
             // We can't guarantee that the default transformation is an array
             defaults = angular.isArray(defaults) ? defaults : [defaults];
-            console.log(defaults.concat(transform));
+            //console.log(defaults.concat(transform));
             // Append the new transformation to the defaults
             return defaults.concat(transform);
         }
 
-        return $resource('https://wwwdev2.lib.ua.edu/databases/api/:db', {db: 'active'}, {
-            cache: true,
+        return $resource('//wwwdev2.lib.ua.edu/databases/api/:db', {db: 'all'}, {
             get: {
+                cache: true,
                 method: 'GET',
                 transformResponse: appendTransform($http.defaults.transformResponse, function(data){
                     var db = angular.fromJson(data);
+
                     //Pre sort databases by title
                     var databases = $filter('orderBy')(db.databases, 'title');
                     // Set position for stable sort
@@ -30,9 +31,11 @@ angular.module('ualib.databases')
                         switch (databases[i].location){
                             case 'UA':
                                 access = 'On campus only';
+                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                                 break;
                             case 'UA, Remote':
                                 access = 'myBama login required off campus';
+                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                                 break;
                             case 'www':
                             case 'WWW':
@@ -41,8 +44,6 @@ angular.module('ualib.databases')
                             default:
                                 access = databases[i].location;
                         }
-                        if (databases[i].auth === "1")
-                            databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                         databases[i].access = access;
                         databases[i].position = i;
                         databases[i].inScout = databases[i].notInEDS === 'Y';

@@ -10,6 +10,9 @@ angular.module('ualib.databases', [
     'ualib.ui',
     'databases.templates'
 ])
+    .config(['$locationProvider', function($locationProvider){
+        //$locationProvider.html5Mode(false).hashPrefix('!')
+    }])
 
     .constant('DB_PROXY_PREPEND_URL', 'http://libdata.lib.ua.edu/login?url=');
 

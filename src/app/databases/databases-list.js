@@ -58,7 +58,7 @@ angular.module('ualib.databases')
 
 
             //if (newVal.search && newVal.search.length > 2){
-                filtered = $filter('filter')(filtered, newVal.search);
+                filtered = $filter('fuzzy')(filtered, newVal.search);
             //}
 
             if (newVal.startsWith){
@@ -243,7 +243,7 @@ angular.module('ualib.databases')
             var params = $location.search();
             var scopeFacets = {};
             angular.copy($scope.db, scopeFacets);
-            console.log(params);
+            //console.log(params);
             $scope.activeFilters = params;
 
             if (params['page']){

@@ -52,6 +52,28 @@ module.exports = function(grunt){
                 }
             }
         },
+        ngAnnotate: {
+            options: {
+                singleQuotes: true
+            },
+            app: {
+                files: [
+                    {
+                        'dist/databases.js': ['dist/databases.js']
+                    }
+                ]
+            }
+        },
+        uglify: {
+            options: {
+                mangle: false
+            },
+            app: {
+                files: {
+                    'dist/databases.min.js': ['dist/databases-templates.js', 'dist/databases.js']
+                }
+            }
+        },
       bump: {
         options: {
           files: ['package.json', 'bower.json'],
@@ -74,4 +96,5 @@ module.exports = function(grunt){
 
 
     grunt.registerTask('default', ['html2js', 'concat', 'less:dev']);
+    grunt.registerTask('build', ['html2js', 'concat', 'ngAnnotate', 'uglify', 'less:build']);
 };

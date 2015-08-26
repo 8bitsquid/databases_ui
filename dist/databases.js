@@ -10,6 +10,9 @@ angular.module('ualib.databases', [
     'ualib.ui',
     'databases.templates'
 ])
+    .config(['$locationProvider', function($locationProvider){
+        //$locationProvider.html5Mode(false).hashPrefix('!')
+    }])
 
     .constant('DB_PROXY_PREPEND_URL', 'http://libdata.lib.ua.edu/login?url=');
 
@@ -29,17 +32,18 @@ angular.module('ualib.databases')
 
             // We can't guarantee that the default transformation is an array
             defaults = angular.isArray(defaults) ? defaults : [defaults];
-            console.log(defaults.concat(transform));
+            //console.log(defaults.concat(transform));
             // Append the new transformation to the defaults
             return defaults.concat(transform);
         }
 
-        return $resource('https://wwwdev2.lib.ua.edu/databases/api/:db', {db: 'active'}, {
-            cache: true,
+        return $resource('//wwwdev2.lib.ua.edu/databases/api/:db', {db: 'all'}, {
             get: {
+                cache: true,
                 method: 'GET',
                 transformResponse: appendTransform($http.defaults.transformResponse, function(data){
                     var db = angular.fromJson(data);
+
                     //Pre sort databases by title
                     var databases = $filter('orderBy')(db.databases, 'title');
                     // Set position for stable sort
@@ -48,9 +52,11 @@ angular.module('ualib.databases')
                         switch (databases[i].location){
                             case 'UA':
                                 access = 'On campus only';
+                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                                 break;
                             case 'UA, Remote':
                                 access = 'myBama login required off campus';
+                                databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                                 break;
                             case 'www':
                             case 'WWW':
@@ -59,8 +65,6 @@ angular.module('ualib.databases')
                             default:
                                 access = databases[i].location;
                         }
-                        if (databases[i].auth === "1")
-                            databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
                         databases[i].access = access;
                         databases[i].position = i;
                         databases[i].inScout = databases[i].notInEDS === 'Y';
@@ -80,7 +84,7 @@ angular.module('ualib.databases')
                 reloadOnSearch: false,
                 resolve: {
                     databases: function(databasesFactory){
-                        return databasesFactory.get({db: 'active'})
+                        return databasesFactory.get({db: 'all'})
                             .$promise.then(function(data){
                                 return data;
                             }, function(data, status, headers, config) {
@@ -132,7 +136,7 @@ angular.module('ualib.databases')
 
 
             //if (newVal.search && newVal.search.length > 2){
-                filtered = $filter('filter')(filtered, newVal.search);
+                filtered = $filter('fuzzy')(filtered, newVal.search);
             //}
 
             if (newVal.startsWith){
@@ -317,7 +321,7 @@ angular.module('ualib.databases')
             var params = $location.search();
             var scopeFacets = {};
             angular.copy($scope.db, scopeFacets);
-            console.log(params);
+            //console.log(params);
             $scope.activeFilters = params;
 
             if (params['page']){
@@ -371,22 +375,6 @@ angular.module('ualib.databases')
             });*/
         }
 
-    }])
-    .filter('customHighlight',['$sce', function($sce) {
-        return function(text, filterPhrase) {
-            if (filterPhrase) {
-                var tag_re = /(<a\/?[^>]+>)/g;
-                var filter_re = new RegExp('(' + filterPhrase + ')', 'gi');
-                text = text.split(tag_re).map(function(string) {
-                    if (string.match(tag_re)) {
-                        return string;
-                    } else {
-                        return string.replace(filter_re,
-                            '<span class="ui-match">$1</span>');
-                    }
-                }).join('');
-            }
-            return $sce.trustAsHtml(text);
-        };
     }]);
+
 
