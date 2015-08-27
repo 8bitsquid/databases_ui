@@ -270,31 +270,6 @@ angular.module('ualib.databases')
                 }
             });
             $scope.db = scopeFacets;
-            /*angular.forEach(params, function(val, key){
-                if (key === 'page'){
-                    $scope.pager.page = val;
-                }
-                else {
-                    if (angular.isDefined(val) && val !== ''){
-                        if (key == 'subjects' || key == 'types'){
-                            var filters = {};
-                            val.split(',').forEach(function(filter){
-                                filters[filter] = true;
-                            });
-                            val = filters;
-                        }
-                        $scope.db[key] = val;
-                    }
-                    else {
-                        if (angular.isObject($scope.db[key])){
-                            $scope.db[key] = {};
-                        }
-                        else{
-                            $scope.db[key] = '';
-                        }
-                    }
-                }
-            });*/
         }
 
     }])

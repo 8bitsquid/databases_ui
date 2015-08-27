@@ -83,8 +83,8 @@ angular.module('ualib.databases')
             .when('/databases', {
                 reloadOnSearch: false,
                 resolve: {
-                    databases: function(databasesFactory){
-                        return databasesFactory.get({db: 'all'})
+                    databases: ['databasesFactory', function(databasesFactory){
+                        return databasesFactory.get({db: 'active'})
                             .$promise.then(function(data){
                                 return data;
                             }, function(data, status, headers, config) {
@@ -96,7 +96,7 @@ angular.module('ualib.databases')
                                     config: config
                                 });
                             });
-                    }
+                    }]
                 },
                 templateUrl: 'databases/databases-list.tpl.html',
                 controller: 'DatabasesListCtrl'
@@ -348,33 +348,24 @@ angular.module('ualib.databases')
                 }
             });
             $scope.db = scopeFacets;
-            /*angular.forEach(params, function(val, key){
-                if (key === 'page'){
-                    $scope.pager.page = val;
-                }
-                else {
-                    if (angular.isDefined(val) && val !== ''){
-                        if (key == 'subjects' || key == 'types'){
-                            var filters = {};
-                            val.split(',').forEach(function(filter){
-                                filters[filter] = true;
-                            });
-                            val = filters;
-                        }
-                        $scope.db[key] = val;
-                    }
-                    else {
-                        if (angular.isObject($scope.db[key])){
-                            $scope.db[key] = {};
-                        }
-                        else{
-                            $scope.db[key] = '';
-                        }
-                    }
-                }
-            });*/
         }
 
+    }])
+    .filter('customHighlight',['$sce', function($sce) {
+        return function(text, filterPhrase) {
+            if (filterPhrase) {
+                var tag_re = /(<a\/?[^>]+>)/g;
+                var filter_re = new RegExp('(' + filterPhrase + ')', 'gi');
+                text = text.split(tag_re).map(function(string) {
+                    if (string.match(tag_re)) {
+                        return string;
+                    } else {
+                        return string.replace(filter_re,
+                            '<span class="ui-match">$1</span>');
+                    }
+                }).join('');
+            }
+            return $sce.trustAsHtml(text);
+        };
     }]);
-
 
