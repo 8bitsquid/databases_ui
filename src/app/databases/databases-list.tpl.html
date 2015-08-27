@@ -69,7 +69,7 @@
             <div class="media-body">
 
                 <h4 class="media-heading">
-                    <a ng-href="{{DB_PROXY_PREPEND_URL}}{{item.url}}" title="{{item.title}}" ng-bind-html="item.title | highlight:db.search"></a>
+                    <a ng-href="{{item.url}}" title="{{item.title}}" ng-bind-html="item.title | highlight:db.search"></a>
                     <!--<small ng-if="item.presentedBy">({{item.presentedBy}})</small>-->
                     <small ng-bind-html="item.coverage | highlight:db.search"></small>
 
