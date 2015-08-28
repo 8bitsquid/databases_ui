@@ -58,7 +58,7 @@ angular.module('ualib.databases')
 
 
             //if (newVal.search && newVal.search.length > 2){
-                filtered = $filter('fuzzy')(filtered, newVal.search);
+                filtered = $filter('filter')(filtered, newVal.search);
             //}
 
             if (newVal.startsWith){
@@ -83,19 +83,24 @@ angular.module('ualib.databases')
             });
 
             $scope.filteredDB = filtered;
-            $scope.pager.totalItems = $scope.filteredDB.length;
-            $scope.pager.firstItem = (($scope.pager.page-1)*$scope.pager.perPage)+1;
-            $scope.pager.lastItem = $scope.pager.page*($scope.pager.totalItems < $scope.pager.maxSize ? $scope.pager.totalItems : $scope.pager.perPage);
-            var numPages =  Math.floor($scope.pager.totalItems / $scope.pager.maxSize);
-            if (numPages < $scope.pager.page){
-                $scope.pager.page = numPages || 1;
-            }
+            updatePager();
 
             var newParams = angular.extend({}, newVal, {page: $scope.pager.page});
 
             processFacets(filtered);
             scopeToParams(newParams);
         }, true);
+
+        function updatePager(){
+            $scope.pager.totalItems = $scope.filteredDB.length;
+            var numPages =  Math.floor($scope.pager.totalItems / $scope.pager.maxSize);
+            if (numPages < $scope.pager.page){
+                $scope.pager.page = numPages || 1;
+            }
+            $scope.pager.firstItem = ($scope.pager.page-1)*$scope.pager.perPage+1;
+            $scope.pager.lastItem = Math.min($scope.pager.totalItems, ($scope.pager.page * $scope.pager.perPage));
+
+        }
 
 
         function filterBySubject(item){
@@ -134,7 +139,7 @@ angular.module('ualib.databases')
         };
 
         $scope.pageChange = function(){
-
+            updatePager();
             scopeToParams({page: $scope.pager.page});
             $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1 });
         };
