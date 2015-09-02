@@ -58,7 +58,7 @@ angular.module('ualib.databases')
 
 
             //if (newVal.search && newVal.search.length > 2){
-                filtered = $filter('filter')(filtered, newVal.search);
+                filtered = $filter('filter')(filtered, newVal.search, simpleSearch);
             //}
 
             if (newVal.startsWith){
@@ -90,6 +90,22 @@ angular.module('ualib.databases')
             processFacets(filtered);
             scopeToParams(newParams);
         }, true);
+
+        function simpleSearch(obj, text) {
+            if (text){
+                text = (''+text).toLowerCase();
+                var tokens = [].concat.apply([], text.split('"').map(function(v,i){
+                    return i%2 ? v : v.split(' ');
+                })).filter(Boolean);
+
+                var matched = tokens.filter(function(token){
+                    return (''+obj).toLowerCase().indexOf(token) > -1;
+                });
+
+                return matched.length === tokens.length;
+            }
+            return true;
+        }
 
         function updatePager(){
             $scope.pager.totalItems = $scope.filteredDB.length;
@@ -281,8 +297,12 @@ angular.module('ualib.databases')
     .filter('customHighlight',['$sce', function($sce) {
         return function(text, filterPhrase) {
             if (filterPhrase) {
-                var tag_re = /(<a\/?[^>]+>)/g;
-                var filter_re = new RegExp('(' + filterPhrase + ')', 'gi');
+                var tag_re = /<(.|\n)*?>/g;
+                var tokens = [].concat.apply([], filterPhrase.split('"').map(function(v,i){
+                    return i%2 ? v : v.split(' ');
+                })).filter(Boolean).join('|');
+
+                var filter_re = new RegExp('(' + tokens + ')', 'gi');
                 text = text.split(tag_re).map(function(string) {
                     if (string.match(tag_re)) {
                         return string;
@@ -291,6 +311,7 @@ angular.module('ualib.databases')
                             '<span class="ui-match">$1</span>');
                     }
                 }).join('');
+
             }
             return $sce.trustAsHtml(text);
         };

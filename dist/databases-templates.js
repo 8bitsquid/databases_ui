@@ -73,9 +73,9 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "            <div class=\"media-body\">\n" +
     "\n" +
     "                <h4 class=\"media-heading\">\n" +
-    "                    <a ng-href=\"{{item.url}}\" title=\"{{item.title}}\" ng-bind-html=\"item.title | highlight:db.search\"></a>\n" +
+    "                    <a ng-href=\"{{item.url}}\" title=\"{{item.title}}\" ng-bind-html=\"item.title | customHighlight:db.search\"></a>\n" +
     "                    <!--<small ng-if=\"item.presentedBy\">({{item.presentedBy}})</small>-->\n" +
-    "                    <small ng-bind-html=\"item.coverage | highlight:db.search\"></small>\n" +
+    "                    <small ng-bind-html=\"item.coverage | customHighlight:db.search\"></small>\n" +
     "\n" +
     "                    <small class=\"pull-right\">\n" +
     "                        <span class=\"label label-success\" ng-if=\"item.hasFullText == 'A'\">All Full Text</span>\n" +
@@ -92,11 +92,11 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "                </div>\n" +
     "                <div class=\"databases-details\" ng-if=\"(item.subjects | where:{type:1}).length > 0\">\n" +
     "                    <strong>Primary subjects: </strong>\n" +
-    "                    <span ng-repeat=\"subj in item.subjects | where:{type:1}\" ng-bind-html=\"subj.subject | highlight:db.search\"></span>\n" +
+    "                    <span ng-repeat=\"subj in item.subjects | where:{type:1}\" ng-bind-html=\"subj.subject | customHighlight:db.search\"></span>\n" +
     "                </div>\n" +
     "                <div class=\"databases-details\" ng-if=\"item.types\">\n" +
     "                    <strong>Types of material: </strong>\n" +
-    "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | highlight:db.search\"></span>\n" +
+    "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | customHighlight:db.search\"></span>\n" +
     "                </div>\n" +
     "                <div class=\"scout-coverage\">\n" +
     "                    <strong>Scout coverage: </strong>\n" +
