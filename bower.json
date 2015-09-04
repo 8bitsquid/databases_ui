@@ -1,10 +1,9 @@
 {
   "name": "databases_ui",
-  "version": "1.8.6",
+  "version": "1.9.0",
   "license": "ECL-2.0",
   "private": true,
   "main": [
-    "dist/databases-templates.js",
     "dist/databases.js",
     "dist/databases.css"
   ],

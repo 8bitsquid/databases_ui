@@ -13,13 +13,13 @@ module.exports = function(grunt){
                     process: true
                 },
                 src: 'src/app/**/*.tpl.html',
-                dest: 'dist/databases-templates.js',
+                dest: 'tmp/templates.js',
                 module: 'databases.templates'
             }
         },
         concat: {
             dist: {
-                src: ['src/app/**/*.js'],
+                src: ['tmp/templates.js','src/app/**/*.js'],
                 dest: 'dist/databases.js'
             },
             index: {
@@ -70,9 +70,12 @@ module.exports = function(grunt){
             },
             app: {
                 files: {
-                    'dist/databases.min.js': ['dist/databases-templates.js', 'dist/databases.js']
+                    'dist/databases.min.js': ['dist/databases.js']
                 }
             }
+        },
+        clean: {
+            app: ['tmp/']
         },
       bump: {
         options: {
@@ -95,6 +98,6 @@ module.exports = function(grunt){
     });
 
 
-    grunt.registerTask('default', ['html2js', 'concat', 'less:dev']);
-    grunt.registerTask('build', ['html2js', 'concat', 'ngAnnotate', 'uglify', 'less:build']);
+    grunt.registerTask('default', ['html2js', 'concat', 'less:dev', 'clean']);
+    grunt.registerTask('build', ['html2js', 'concat', 'ngAnnotate', 'uglify', 'less:build', 'clean']);
 };
