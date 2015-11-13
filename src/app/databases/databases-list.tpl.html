@@ -73,9 +73,9 @@
             <div class="media-body">
 
                 <h4 class="media-heading">
-                    <a ng-href="{{item.url}}" title="{{item.title}}" ng-bind-html="item.title | customHighlight:db.search"></a>
+                    <a ng-href="{{item.url}}" title="{{item.title}}" ng-bind-html="item.title | highlight:db.search"></a>
                     <!--<small ng-if="item.presentedBy">({{item.presentedBy}})</small>-->
-                    <small ng-bind-html="item.coverage | customHighlight:db.search"></small>
+                    <small ng-bind-html="item.coverage | highlight:db.search"></small>
 
                     <small class="pull-right">
                         <span class="label label-success" ng-if="item.hasFullText == 'A'">All Full Text</span>
@@ -85,18 +85,18 @@
                     </small>
                 </h4>
 
-                <p class="text-justify" ng-bind-html="item.description | customHighlight:db.search"></p>
+                <p class="text-justify" ng-bind-html="item.description | highlight:db.search"></p>
 
                 <div ng-if="item.location">
                     <strong>Access:</strong> {{item.location}}
                 </div>
                 <div class="databases-details" ng-if="(item.subjects | where:{type:1}).length > 0">
                     <strong>Primary subjects: </strong>
-                    <span ng-repeat="subj in item.subjects | where:{type:1}" ng-bind-html="subj.subject | customHighlight:db.search"></span>
+                    <span ng-repeat="subj in item.subjects | where:{type:1}" ng-bind-html="subj.subject | highlight:db.search"></span>
                 </div>
                 <div class="databases-details" ng-if="item.types">
                     <strong>Types of material: </strong>
-                    <span ng-repeat="type in item.types" ng-bind-html="type.type | customHighlight:db.search"></span>
+                    <span ng-repeat="type in item.types" ng-bind-html="type.type | highlight:db.search"></span>
                 </div>
                 <div class="scout-coverage">
                     <strong>Scout coverage: </strong>

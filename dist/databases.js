@@ -77,9 +77,9 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "            <div class=\"media-body\">\n" +
     "\n" +
     "                <h4 class=\"media-heading\">\n" +
-    "                    <a ng-href=\"{{item.url}}\" title=\"{{item.title}}\" ng-bind-html=\"item.title | customHighlight:db.search\"></a>\n" +
+    "                    <a ng-href=\"{{item.url}}\" title=\"{{item.title}}\" ng-bind-html=\"item.title | highlight:db.search\"></a>\n" +
     "                    <!--<small ng-if=\"item.presentedBy\">({{item.presentedBy}})</small>-->\n" +
-    "                    <small ng-bind-html=\"item.coverage | customHighlight:db.search\"></small>\n" +
+    "                    <small ng-bind-html=\"item.coverage | highlight:db.search\"></small>\n" +
     "\n" +
     "                    <small class=\"pull-right\">\n" +
     "                        <span class=\"label label-success\" ng-if=\"item.hasFullText == 'A'\">All Full Text</span>\n" +
@@ -89,18 +89,18 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "                    </small>\n" +
     "                </h4>\n" +
     "\n" +
-    "                <p class=\"text-justify\" ng-bind-html=\"item.description | customHighlight:db.search\"></p>\n" +
+    "                <p class=\"text-justify\" ng-bind-html=\"item.description | highlight:db.search\"></p>\n" +
     "\n" +
     "                <div ng-if=\"item.location\">\n" +
     "                    <strong>Access:</strong> {{item.location}}\n" +
     "                </div>\n" +
     "                <div class=\"databases-details\" ng-if=\"(item.subjects | where:{type:1}).length > 0\">\n" +
     "                    <strong>Primary subjects: </strong>\n" +
-    "                    <span ng-repeat=\"subj in item.subjects | where:{type:1}\" ng-bind-html=\"subj.subject | customHighlight:db.search\"></span>\n" +
+    "                    <span ng-repeat=\"subj in item.subjects | where:{type:1}\" ng-bind-html=\"subj.subject | highlight:db.search\"></span>\n" +
     "                </div>\n" +
     "                <div class=\"databases-details\" ng-if=\"item.types\">\n" +
     "                    <strong>Types of material: </strong>\n" +
-    "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | customHighlight:db.search\"></span>\n" +
+    "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | highlight:db.search\"></span>\n" +
     "                </div>\n" +
     "                <div class=\"scout-coverage\">\n" +
     "                    <strong>Scout coverage: </strong>\n" +
@@ -205,7 +205,7 @@ angular.module('ualib.databases')
             .when('/databases', {
                 reloadOnSearch: false,
                 resolve: {
-                    databases: ['databasesFactory', function(databasesFactory){
+                    databases: function(databasesFactory){
                         return databasesFactory.get({db: 'active'})
                             .$promise.then(function(data){
                                 return data;
@@ -218,7 +218,7 @@ angular.module('ualib.databases')
                                     config: config
                                 });
                             });
-                    }]
+                    }
                 },
                 templateUrl: 'databases/databases-list.tpl.html',
                 controller: 'DatabasesListCtrl'
@@ -493,27 +493,5 @@ angular.module('ualib.databases')
             $scope.db = scopeFacets;
         }
 
-    }])
-    .filter('customHighlight',['$sce', function($sce) {
-        return function(text, filterPhrase) {
-            if (filterPhrase) {
-                var tag_re = /(<\S[^><]*>)/g;
-                var tokens = [].concat.apply([], filterPhrase.split('"').map(function(v,i){
-                    return i%2 ? v : v.split(' ');
-                })).filter(Boolean).join('|');
-
-                var filter_re = new RegExp('(' + tokens + ')', 'gi');
-                text = text.split(tag_re).map(function(string) {
-                    if (string.match(tag_re)) {
-                        return string;
-                    } else {
-                        return string.replace(filter_re,
-                            '<span class="ui-match">$1</span>');
-                    }
-                }).join('');
-
-            }
-            return $sce.trustAsHtml(text);
-        };
     }]);
 
