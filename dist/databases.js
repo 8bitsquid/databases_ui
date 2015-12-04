@@ -102,6 +102,10 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "                    <strong>Types of material: </strong>\n" +
     "                    <span ng-repeat=\"type in item.types\" ng-bind-html=\"type.type | highlight:db.search\"></span>\n" +
     "                </div>\n" +
+    "                <div class=\"databases-details\" ng-if=\"item.vendor\">\n" +
+    "                    <strong>Vendor: </strong>\n" +
+    "                    <span ng-bind-html=\"item.vendor | highlight:db.search\"></span>\n" +
+    "                </div>\n" +
     "                <div class=\"scout-coverage\">\n" +
     "                    <strong>Scout coverage: </strong>\n" +
     "                    <span class=\"fa text-info\" ng-class=\"{'fa-circle': item.notInEDS == 'Y', 'fa-adjust': item.notInEDS == 'P', 'fa-circle-o': !item.notInEDS}\">\n" +
@@ -205,7 +209,7 @@ angular.module('ualib.databases')
             .when('/databases', {
                 reloadOnSearch: false,
                 resolve: {
-                    databases: function(databasesFactory){
+                    databases: ['databasesFactory', function(databasesFactory){
                         return databasesFactory.get({db: 'active'})
                             .$promise.then(function(data){
                                 return data;
@@ -218,7 +222,7 @@ angular.module('ualib.databases')
                                     config: config
                                 });
                             });
-                    }
+                    }]
                 },
                 templateUrl: 'databases/databases-list.tpl.html',
                 controller: 'DatabasesListCtrl'

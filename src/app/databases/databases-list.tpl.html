@@ -98,6 +98,10 @@
                     <strong>Types of material: </strong>
                     <span ng-repeat="type in item.types" ng-bind-html="type.type | highlight:db.search"></span>
                 </div>
+                <div class="databases-details" ng-if="item.vendor">
+                    <strong>Vendor: </strong>
+                    <span ng-bind-html="item.vendor | highlight:db.search"></span>
+                </div>
                 <div class="scout-coverage">
                     <strong>Scout coverage: </strong>
                     <span class="fa text-info" ng-class="{'fa-circle': item.notInEDS == 'Y', 'fa-adjust': item.notInEDS == 'P', 'fa-circle-o': !item.notInEDS}">
