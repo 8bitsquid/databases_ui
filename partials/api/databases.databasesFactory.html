@@ -1,0 +1,32 @@
+<h1><code ng:non-bindable="">databasesFactory</code>
+<div><span class="hint">service in module <code ng:non-bindable="">databases</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="databases-databasesfactory-page"><p>Factory service to retrieve databases from the API.</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/ng.$resource">$resource</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/ng.$http">$http</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/ng.$filter">$filter</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/databases.constant:DB_PROXY_PREPEND_URL">DB_PROXY_PREPEND_URL</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_appendtransform">appendTransform(defaults, transform)</h3>
+<div class="appendtransform"><div class="databases-databasesfactory-appendtransform-page"><p><span class="label label-warning">Private</span>
+Extend the default responseTransform array - Straight from Angular 1.2.8 API docs - <a href="https://docs.angularjs.org/api/ng/service/$http#overriding-the-default-transformations-per-request">https://docs.angularjs.org/api/ng/service/$http#overriding-the-default-transformations-per-request</a></p>
+<p>Doing this allows custom modifications of the JSON response from the API to be cached after the initial <code>$resource</code> call, instead of
+performing these modifications on every <code>$digest()</code> cycle (e.g., make modifications once, instead of every time the databases list is refreshed).</p>
+</div><h5 id="methods_appendtransform_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>defaults</td><td><a href="" class="label type-hint type-hint-array">Array.&lt;function()&gt;</a></td><td><div class="databases-databasesfactory-appendtransform-page"><p>Default <code>Array</code> of <code>$http</code> transform response transform functions from Angular - will always be <code>$http.defaults.transformResponse</code></p>
+</div></td></tr><tr><td>transform</td><td><a href="" class="label type-hint type-hint-function">function()</a></td><td><div class="databases-databasesfactory-appendtransform-page"><p>Transform function to extend the <code>$http.defaults.transformResponse</code> Array with.</p>
+</div></td></tr></tbody></table><h5 id="methods_appendtransform_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-array">Array.&lt;function()&gt;</a></td><td><div class="databases-databasesfactory-appendtransform-page"><p>Returns the new <code>transformResponse</code> Array</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>
