@@ -25,10 +25,32 @@ angular.module('ualib.databases')
             })
     }])
 
+    /**
+     * @ngdoc controller
+     * @name databases.Controller:DatabasesListCtrl
+     *
+     * @requires $scope
+     * @requires $filter
+     * @requires $location
+     * @requires $document
+     * @requires databases.databasesFactory
+     *
+     *
+     * @description
+     * Controller for the databases route (`/#/databases`)
+     */
+
     .controller('DatabasesListCtrl', ['$scope', 'databases', '$filter' ,'$location' ,'$document', function($scope, db, $filter, $location, $document){
         var databases = [];
 
-
+        /**
+         * @ngdoc object
+         * @name databases.Controller:DatabasesListCtrl:$scope.numAlpha
+         * @propertyOf databases.Controller:DatabasesListCtrl
+         *
+         * @description
+         * `Array` of characters `a-z` for `Starts With` filter UI
+         */
         $scope.numAlpha = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
         $scope.numAlpha.unshift('0-9');
 

@@ -94,7 +94,29 @@ module.exports = function(grunt){
           prereleaseName: false,
           regExp: false
         }
-      }
+      },
+        ngdocs: {
+            options: {
+                dest: 'docs',
+                html5Mode: false,
+                startPage: 'api/databases',
+                sourceLink: true,
+                title: "Databases UI Docs",
+                titleLink: "api/databases"
+            },
+            api: {
+                src: ['src/**/*.js', '!src/**/*.spec.js'],
+                title: 'API Documentation'
+            }
+        },
+        'gh-pages': {
+            options: {
+                base: 'docs'
+            },
+            firstTarget: {
+                src: ['**/*']
+            }
+        }
     });
 
 

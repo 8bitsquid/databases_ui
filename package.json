@@ -1,6 +1,6 @@
 {
   "name": "databases-ui",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "deDependencies": {
     "grunt": "~0.4.5"
   },
@@ -20,6 +20,8 @@
     "grunt-bower-concat": "~0.4.0",
     "grunt-wiredep": "~2.0.0",
     "grunt-ng-annotate": "~1.0.1",
-    "grunt-contrib-clean": "~0.6.0"
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-ngdocs": "~0.2.9",
+    "grunt-gh-pages": "~1.0.0"
   }
 }

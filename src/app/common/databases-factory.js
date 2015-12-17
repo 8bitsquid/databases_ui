@@ -1,12 +1,39 @@
 angular.module('ualib.databases')
 
 /**
- * Transform the JSON response - this allows the transformed values to be cached via Angular's $resource service.
+ * @ngdoc service
+ * @name databases.databasesFactory
+ *
+ * @requires $resource
+ * @requires $http
+ * @requires $filter
+ * @requires databases.constant:DB_PROXY_PREPEND_URL
+ *
+ * @description
+ * Factory service to retrieve databases from the API.
+ *
  */
     .factory('databasesFactory', ['$resource', '$http', '$filter', 'DB_PROXY_PREPEND_URL', function($resource, $http, $filter, DB_PROXY_PREPEND_URL){
 
         //TODO: centralize this function so it can be used with all apps
-        // Extend the default responseTransform array - Straight from Angular 1.2.8 API docs - https://docs.angularjs.org/api/ng/service/$http#overriding-the-default-transformations-per-request
+
+        /**
+         * @ngdoc function
+         * @name databases.databasesFactory#appendTransform
+         * @methodOf databases.databasesFactory
+         *
+         * @param {Array.<function()>} defaults Default `Array` of `$http` transform response transform functions from Angular - will always be `$http.defaults.transformResponse`
+         * @param {function()} transform Transform function to extend the `$http.defaults.transformResponse` Array with.
+         *
+         * @description
+         * <span class="label label-warning">Private</span>
+         * Extend the default responseTransform array - Straight from Angular 1.2.8 API docs - https://docs.angularjs.org/api/ng/service/$http#overriding-the-default-transformations-per-request
+         *
+         * Doing this allows custom modifications of the JSON response from the API to be cached after the initial `$resource` call, instead of
+         * performing these modifications on every `$digest()` cycle (e.g., make modifications once, instead of every time the databases list is refreshed).
+         *
+         * @returns {Array.<function()>} Returns the new `transformResponse` Array
+         */
         function appendTransform(defaults, transform) {
 
             // We can't guarantee that the default transformation is an array
