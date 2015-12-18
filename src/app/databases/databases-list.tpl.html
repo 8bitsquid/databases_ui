@@ -1,124 +1,144 @@
-<div class="page-header"><h1>Databases</h1></div>
+<div class="jumbotron-header">
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1>Databases</h1>
+                </div>
+                <div class="hidden-xs col-md-4">
+                    <div class="well">
+                        <p class="lead">Check out our database trials and tell us what you think!</p>
+                        <a class="btn btn-primary" href="/research-tools/e-resources/electronic-resource-trials/" title="database trials">See Trials <span class="fa fa-fw fa-eye"></span></span></a>
+                        <a class="btn btn-default" href="/forms/electronic-resource-trial-evaluation-form/" title="database trials evaluation form">Evaluate <span class="fa fa-fw fa-check-square-o"></span></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="row">
-    <div class="col-md-3 col-md-push-9">
-        <form class="facets-form">
-            <div class="form-group">
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-3 col-sm-push-9">
+            <form class="facets-form">
+                <div class="form-group">
                 <span class="page-header">
                     <h4>Filter Databases By</h4>
                 </span>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" ng-model="db.search" placeholder="Keyword search">
-            </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" ng-model="db.search" placeholder="Keyword search">
+                </div>
 
-            <div class="form-group hidden-xs">
-                <h5>Title starts with</h5>
-                <div class="facet-group alphanum-group">
-                    <div class="btn-group">
-                        <label class="btn btn-default" ng-repeat="na in numAlpha" ng-model="db.startsWith" btn-radio="'{{na}}'" ng-disabled="startsWithDisabled[na]" uncheckable>{{na}}</label>
+                <div class="form-group hidden-xs">
+                    <h5>Title starts with</h5>
+                    <div class="facet-group alphanum-group">
+                        <div class="btn-group">
+                            <label class="btn btn-default" ng-repeat="na in numAlpha" ng-model="db.startsWith" btn-radio="'{{na}}'" ng-disabled="startsWithDisabled[na]" uncheckable>{{na}}</label>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group hidden-xs">
-                <h5>Subjects</h5>
-                <div class="facet-group">
-                    <div class="radio" ng-class="{'disabled': subj.disabled}" ng-repeat="subj in subjects">
-                        <label>
-                            <input type="checkbox" ng-model="db.subjects[subj.subject]" ng-disabled="subj.disabled">
-                            {{subj.subject}} ({{subj.total}})
-                        </label>
+                <div class="form-group hidden-xs">
+                    <h5>Subjects</h5>
+                    <div class="facet-group">
+                        <div class="radio" ng-class="{'disabled': subj.disabled}" ng-repeat="subj in subjects">
+                            <label>
+                                <input type="checkbox" ng-model="db.subjects[subj.subject]" ng-disabled="subj.disabled">
+                                {{subj.subject}} ({{subj.total}})
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group hidden-xs">
-                <h5>Types</h5>
-                <div class="facet-group">
-                    <div class="radio" ng-class="{'disabled': type.disabled}" ng-repeat="type in types">
-                        <label>
-                            <input type="checkbox" ng-model="db.types[type.type]"  ng-disabled="type.disabled">
-                            {{type.type}} ({{type.total}})
-                        </label>
+                <div class="form-group hidden-xs">
+                    <h5>Types</h5>
+                    <div class="facet-group">
+                        <div class="radio" ng-class="{'disabled': type.disabled}" ng-repeat="type in types">
+                            <label>
+                                <input type="checkbox" ng-model="db.types[type.type]"  ng-disabled="type.disabled">
+                                {{type.type}} ({{type.total}})
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <button type="button" class="btn btn-block btn-primary" ng-click="resetFilters()"><span class="fa fa-fw fa-refresh"></span> Reset filters</button>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-9 col-md-pull-3 databases-list-container">
-        <p>
-        <h4 class="text-right">Showing {{pager.firstItem}} - {{pager.lastItem}} of {{pager.totalItems}} results</h4>
-        <div ng-if="!!activeFilters.startsWith || activeFilters.subjects || activeFilters.types">
-
-        <ol class="breadcrumb facetcrumb">
-            <li ng-if="!!activeFilters.startsWith"><strong>Starts with:</strong> <button type="button" class="btn btn-default" ng-click="db.startsWith = ''">"{{db.startsWith}}" <span class="text-muted" aria-hidden="true">&times;</span></button></li>
-            <li ng-if="activeFilters.subjects"><strong>Subjects:</strong> <button type="button" class="btn btn-default" ng-click="db.subjects[subject] = false" ng-repeat="(subject, key) in db.subjects">{{subject}} <span class="text-muted" aria-hidden="true">&times;</span></button></li>
-            <li ng-if="activeFilters.types"><strong>Types:</strong> <button type="button" class="btn btn-default" ng-click="db.types[type] = false" ng-repeat="(type, key) in db.types">{{type}} <span class="text-muted" aria-hidden="true">&times;</span></button></li>
-            <li class="pull-right"><button type="button" class="btn btn-primary btn-small reset-btn" title="Reset filters" ng-click="resetFilters()"><i class="fa fa-refresh"></i></button></li>
-        </ol>
+                <div class="form-group">
+                    <button type="button" class="btn btn-block btn-primary" ng-click="resetFilters()"><span class="fa fa-fw fa-refresh"></span> Reset filters</button>
+                </div>
+            </form>
         </div>
+        <div class="col-sm-9 col-sm-pull-3 databases-list-container">
+            <p>
+            <h4 class="text-right">Showing {{pager.firstItem}} - {{pager.lastItem}} of {{pager.totalItems}} results</h4>
+            <div ng-if="!!activeFilters.startsWith || activeFilters.subjects || activeFilters.types">
+
+                <ol class="breadcrumb facetcrumb">
+                    <li ng-if="!!activeFilters.startsWith"><strong>Starts with:</strong> <button type="button" class="btn btn-default" ng-click="db.startsWith = ''">"{{db.startsWith}}" <span class="text-muted" aria-hidden="true">&times;</span></button></li>
+                    <li ng-if="activeFilters.subjects"><strong>Subjects:</strong> <button type="button" class="btn btn-default" ng-click="db.subjects[subject] = false" ng-repeat="(subject, key) in db.subjects">{{subject}} <span class="text-muted" aria-hidden="true">&times;</span></button></li>
+                    <li ng-if="activeFilters.types"><strong>Types:</strong> <button type="button" class="btn btn-default" ng-click="db.types[type] = false" ng-repeat="(type, key) in db.types">{{type}} <span class="text-muted" aria-hidden="true">&times;</span></button></li>
+                    <li class="pull-right"><button type="button" class="btn btn-primary btn-small reset-btn" title="Reset filters" ng-click="resetFilters()"><i class="fa fa-refresh"></i></button></li>
+                </ol>
+            </div>
 
 
-        </p>
+            </p>
 
-        <div class="text-center">
-            <pagination class="pagination-sm" ng-model="pager.page" total-items="pager.totalItems" max-size="pager.maxSize" boundary-links="true" rotate="false" items-per-page="pager.perPage" ng-change="pageChange()" ng-if="pager.totalItems > pager.perPage"></pagination>
-        </div>
+            <div class="text-center">
+                <pagination class="pagination-sm" ng-model="pager.page" total-items="pager.totalItems" max-size="pager.maxSize" boundary-links="true" rotate="false" items-per-page="pager.perPage" ng-change="pageChange()" ng-if="pager.totalItems > pager.perPage"></pagination>
+            </div>
 
-        <div class="media animate-repeat" ng-repeat="item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20">
-            <div class="media-body">
+            <div class="media animate-repeat" ng-repeat="item in filteredDB | after:(pager.page-1)*pager.perPage | limitTo:20">
+                <div class="media-body">
 
-                <h4 class="media-heading">
-                    <a ng-href="{{item.url}}" title="{{item.title}}" ng-bind-html="item.title | highlight:db.search"></a>
-                    <!--<small ng-if="item.presentedBy">({{item.presentedBy}})</small>-->
-                    <small ng-bind-html="item.coverage | highlight:db.search"></small>
+                    <h4 class="media-heading">
+                        <a ng-href="{{item.url}}" title="{{item.title}}" ng-bind-html="item.title | highlight:db.search"></a>
+                        <!--<small ng-if="item.presentedBy">({{item.presentedBy}})</small>-->
+                        <small ng-bind-html="item.coverage | highlight:db.search"></small>
 
-                    <small class="pull-right">
-                        <span class="label label-success" ng-if="item.hasFullText == 'A'">All Full Text</span>
-                        <span class="label label-info" ng-if="item.hasFullText == 'P'">Primarily Full Text</span>
-                        <span class="label label-warning" ng-if="item.hasFullText == 'S'">Some Full Text</span>
-                        <span class="label label-danger" ng-if="item.hasFullText == 'N'">No Full Text</span>
-                    </small>
-                </h4>
+                        <small class="pull-right">
+                            <span class="label label-success" ng-if="item.hasFullText == 'A'">All Full Text</span>
+                            <span class="label label-info" ng-if="item.hasFullText == 'P'">Primarily Full Text</span>
+                            <span class="label label-warning" ng-if="item.hasFullText == 'S'">Some Full Text</span>
+                            <span class="label label-danger" ng-if="item.hasFullText == 'N'">No Full Text</span>
+                        </small>
+                    </h4>
 
-                <p class="text-justify" ng-bind-html="item.description | highlight:db.search"></p>
+                    <p class="text-justify" ng-bind-html="item.description | highlight:db.search"></p>
 
-                <div ng-if="item.location">
-                    <strong>Access:</strong> {{item.location}}
-                </div>
-                <div class="databases-details" ng-if="(item.subjects | where:{type:1}).length > 0">
-                    <strong>Primary subjects: </strong>
-                    <span ng-repeat="subj in item.subjects | where:{type:1}" ng-bind-html="subj.subject | highlight:db.search"></span>
-                </div>
-                <div class="databases-details" ng-if="item.types">
-                    <strong>Types of material: </strong>
-                    <span ng-repeat="type in item.types" ng-bind-html="type.type | highlight:db.search"></span>
-                </div>
-                <div class="databases-details" ng-if="item.vendor">
-                    <strong>Vendor: </strong>
-                    <span ng-bind-html="item.vendor | highlight:db.search"></span>
-                </div>
-                <div class="scout-coverage">
-                    <strong>Scout coverage: </strong>
+                    <div ng-if="item.location">
+                        <strong>Access:</strong> {{item.location}}
+                    </div>
+                    <div class="databases-details" ng-if="(item.subjects | where:{type:1}).length > 0">
+                        <strong>Primary subjects: </strong>
+                        <span ng-repeat="subj in item.subjects | where:{type:1}" ng-bind-html="subj.subject | highlight:db.search"></span>
+                    </div>
+                    <div class="databases-details" ng-if="item.types">
+                        <strong>Types of material: </strong>
+                        <span ng-repeat="type in item.types" ng-bind-html="type.type | highlight:db.search"></span>
+                    </div>
+                    <div class="databases-details" ng-if="item.vendor">
+                        <strong>Vendor: </strong>
+                        <span ng-bind-html="item.vendor | highlight:db.search"></span>
+                    </div>
+                    <div class="scout-coverage">
+                        <strong>Scout coverage: </strong>
                     <span class="fa text-info" ng-class="{'fa-circle': item.notInEDS == 'Y', 'fa-adjust': item.notInEDS == 'P', 'fa-circle-o': !item.notInEDS}">
                     </span>
-                    <span ng-if="item.notInEDS == 'Y'">Full</span>
-                    <span  ng-if="item.notInEDS == 'P'">Partial</span>
-                    <span  ng-if="!item.notInEDS">Not in Scout</span>
+                        <span ng-if="item.notInEDS == 'Y'">Full</span>
+                        <span  ng-if="item.notInEDS == 'P'">Partial</span>
+                        <span  ng-if="!item.notInEDS">Not in Scout</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="text-center">
-            <pagination class="pagination-sm" ng-model="pager.page" total-items="pager.totalItems" max-size="pager.maxSize" boundary-links="true" rotate="false" items-per-page="pager.perPage" ng-change="pageChange()" ng-if="pager.totalItems > pager.perPage"></pagination>
-        </div>
+            <div class="text-center">
+                <pagination class="pagination-sm" ng-model="pager.page" total-items="pager.totalItems" max-size="pager.maxSize" boundary-links="true" rotate="false" items-per-page="pager.perPage" ng-change="pageChange()" ng-if="pager.totalItems > pager.perPage"></pagination>
+            </div>
 
-        <div class="alert alert-warning text-center" role="alert" ng-show="pager.totalItems < 1">
-            <h2>No results found <span ng-if="db.search"> for "{{db.search}}"</span></h2>
+            <div class="alert alert-warning text-center" role="alert" ng-show="pager.totalItems < 1">
+                <h2>No results found <span ng-if="db.search"> for "{{db.search}}"</span></h2>
+            </div>
         </div>
     </div>
 </div>
