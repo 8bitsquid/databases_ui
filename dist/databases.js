@@ -6,10 +6,10 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "    <div class=\"jumbotron\">\n" +
     "        <div class=\"container\">\n" +
     "            <div class=\"row\">\n" +
-    "                <div class=\"col-md-8\">\n" +
+    "                <div class=\"col-md-7\">\n" +
     "                    <h1>Databases</h1>\n" +
     "                </div>\n" +
-    "                <div class=\"hidden-xs col-md-4\">\n" +
+    "                <div class=\"hidden-xs col-md-5\">\n" +
     "                    <div class=\"well\">\n" +
     "                        <p class=\"lead\">Check out our database trials and tell us what you think!</p>\n" +
     "                        <a class=\"btn btn-primary\" href=\"/research-tools/e-resources/electronic-resource-trials/\" title=\"database trials\">See Trials <span class=\"fa fa-fw fa-eye\"></span></span></a>\n" +
@@ -262,6 +262,7 @@ angular.module('ualib.databases')
                     // Set position for stable sort
                     angular.forEach(databases, function(db, i){
                         var access;
+
                         switch (databases[i].location){
                             case 'UA':
                                 access = 'On campus only';
@@ -276,8 +277,11 @@ angular.module('ualib.databases')
                             default:
                                 access = databases[i].location;
                         }
-                        if (databases[i].auth == "1")
+
+                        if (databases[i].auth == "1"){
                             databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
+                        }
+
                         databases[i].access = access;
                         databases[i].position = i;
                         databases[i].inScout = databases[i].notInEDS === 'Y';
@@ -296,7 +300,7 @@ angular.module('ualib.databases')
             .when('/databases', {
                 reloadOnSearch: false,
                 resolve: {
-                    databases: ['databasesFactory', function(databasesFactory){
+                    databases: function(databasesFactory){
                         return databasesFactory.get({db: 'active'})
                             .$promise.then(function(data){
                                 return data;
@@ -309,11 +313,11 @@ angular.module('ualib.databases')
                                     config: config
                                 });
                             });
-                    }]
+                    }
                 },
                 templateUrl: 'databases/databases-list.tpl.html',
                 controller: 'DatabasesListCtrl'
-            })
+            });
     }])
 
     /**
@@ -440,7 +444,7 @@ angular.module('ualib.databases')
             return item.subjects.filter(function(itemSubj){
                     return $scope.db.subjects[itemSubj.subject];
                 }).length === subjects.length;
-        };
+        }
 
         function filterByType(item){
             var types = Object.keys($scope.db.types).filter(function(key){
@@ -450,7 +454,7 @@ angular.module('ualib.databases')
             return item.types.filter(function(itemSubj){
                     return $scope.db.types[itemSubj.type];
                 }).length === types.length;
-        };
+        }
 
         $scope.resetFilters = function(){
             $scope.db = {
@@ -470,7 +474,7 @@ angular.module('ualib.databases')
         $scope.pageChange = function(){
             updatePager();
             scopeToParams({page: $scope.pager.page});
-            $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1 });
+            $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1; });
         };
 
         $scope.$on('$destroy', function(){
@@ -486,24 +490,8 @@ angular.module('ualib.databases')
 
 
             for (var i = 0, len = databases.length; i < len; i++){
-                databases[i].subjects.map(function(subj){
-                    if (subjAvail.indexOf(subj.sid) == -1){
-                        subjAvail.push(subj.sid);
-                        subjCount[subj.sid] = 1;
-                    }
-                    else{
-                        subjCount[subj.sid]++;
-                    }
-                });
-                databases[i].types.map(function(type){
-                    if (typeAvail.indexOf(type.tid) == -1){
-                        typeAvail.push(type.tid);
-                        typeCount[type.tid] = 1;
-                    }
-                    else{
-                        typeCount[type.tid]++;
-                    }
-                });
+                databases[i].subjects.map(processFacetsSubj);
+                databases[i].types.map(processFacetsType);
             }
 
             $scope.subjects.map(function(subject){
@@ -519,6 +507,26 @@ angular.module('ualib.databases')
                 t.total = typeCount[type.tid] || 0;
                 return t;
             });
+        }
+
+        function processFacetsSubj(subj){
+            if (subjAvail.indexOf(subj.sid) == -1){
+                subjAvail.push(subj.sid);
+                subjCount[subj.sid] = 1;
+            }
+            else{
+                subjCount[subj.sid]++;
+            }
+        }
+
+        function processFacetsType(type){
+            if (typeAvail.indexOf(type.tid) == -1){
+                typeAvail.push(type.tid);
+                typeCount[type.tid] = 1;
+            }
+            else{
+                typeCount[type.tid]++;
+            }
         }
 
         function processStartsWith(databases){
@@ -580,8 +588,8 @@ angular.module('ualib.databases')
             //console.log(params);
             $scope.activeFilters = params;
 
-            if (params['page']){
-                $scope.pager.page = params['page'];
+            if (params.page){
+                $scope.pager.page = params.page;
             }
 
             angular.forEach(scopeFacets, function(val, key){

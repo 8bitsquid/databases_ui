@@ -22,7 +22,7 @@ angular.module('ualib.databases')
                 },
                 templateUrl: 'databases/databases-list.tpl.html',
                 controller: 'DatabasesListCtrl'
-            })
+            });
     }])
 
     /**
@@ -149,7 +149,7 @@ angular.module('ualib.databases')
             return item.subjects.filter(function(itemSubj){
                     return $scope.db.subjects[itemSubj.subject];
                 }).length === subjects.length;
-        };
+        }
 
         function filterByType(item){
             var types = Object.keys($scope.db.types).filter(function(key){
@@ -159,7 +159,7 @@ angular.module('ualib.databases')
             return item.types.filter(function(itemSubj){
                     return $scope.db.types[itemSubj.type];
                 }).length === types.length;
-        };
+        }
 
         $scope.resetFilters = function(){
             $scope.db = {
@@ -179,7 +179,7 @@ angular.module('ualib.databases')
         $scope.pageChange = function(){
             updatePager();
             scopeToParams({page: $scope.pager.page});
-            $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1 });
+            $document.duScrollTo(0, 30, 500, function (t) { return (--t)*t*t+1; });
         };
 
         $scope.$on('$destroy', function(){
@@ -195,24 +195,8 @@ angular.module('ualib.databases')
 
 
             for (var i = 0, len = databases.length; i < len; i++){
-                databases[i].subjects.map(function(subj){
-                    if (subjAvail.indexOf(subj.sid) == -1){
-                        subjAvail.push(subj.sid);
-                        subjCount[subj.sid] = 1;
-                    }
-                    else{
-                        subjCount[subj.sid]++;
-                    }
-                });
-                databases[i].types.map(function(type){
-                    if (typeAvail.indexOf(type.tid) == -1){
-                        typeAvail.push(type.tid);
-                        typeCount[type.tid] = 1;
-                    }
-                    else{
-                        typeCount[type.tid]++;
-                    }
-                });
+                databases[i].subjects.map(processFacetsSubj);
+                databases[i].types.map(processFacetsType);
             }
 
             $scope.subjects.map(function(subject){
@@ -228,6 +212,26 @@ angular.module('ualib.databases')
                 t.total = typeCount[type.tid] || 0;
                 return t;
             });
+        }
+
+        function processFacetsSubj(subj){
+            if (subjAvail.indexOf(subj.sid) == -1){
+                subjAvail.push(subj.sid);
+                subjCount[subj.sid] = 1;
+            }
+            else{
+                subjCount[subj.sid]++;
+            }
+        }
+
+        function processFacetsType(type){
+            if (typeAvail.indexOf(type.tid) == -1){
+                typeAvail.push(type.tid);
+                typeCount[type.tid] = 1;
+            }
+            else{
+                typeCount[type.tid]++;
+            }
         }
 
         function processStartsWith(databases){
@@ -289,8 +293,8 @@ angular.module('ualib.databases')
             //console.log(params);
             $scope.activeFilters = params;
 
-            if (params['page']){
-                $scope.pager.page = params['page'];
+            if (params.page){
+                $scope.pager.page = params.page;
             }
 
             angular.forEach(scopeFacets, function(val, key){

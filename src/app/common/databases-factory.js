@@ -55,6 +55,7 @@ angular.module('ualib.databases')
                     // Set position for stable sort
                     angular.forEach(databases, function(db, i){
                         var access;
+
                         switch (databases[i].location){
                             case 'UA':
                                 access = 'On campus only';
@@ -69,8 +70,11 @@ angular.module('ualib.databases')
                             default:
                                 access = databases[i].location;
                         }
-                        if (databases[i].auth == "1")
+
+                        if (databases[i].auth == "1"){
                             databases[i].url = DB_PROXY_PREPEND_URL + databases[i].url;
+                        }
+
                         databases[i].access = access;
                         databases[i].position = i;
                         databases[i].inScout = databases[i].notInEDS === 'Y';
