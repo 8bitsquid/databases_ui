@@ -193,6 +193,26 @@ angular.module('ualib.databases')
             var typeAvail = [];
             var typeCount = {};
 
+            function processFacetsSubj(subj){
+                if (subjAvail.indexOf(subj.sid) == -1){
+                    subjAvail.push(subj.sid);
+                    subjCount[subj.sid] = 1;
+                }
+                else{
+                    subjCount[subj.sid]++;
+                }
+            }
+
+            function processFacetsType(type){
+                if (typeAvail.indexOf(type.tid) == -1){
+                    typeAvail.push(type.tid);
+                    typeCount[type.tid] = 1;
+                }
+                else{
+                    typeCount[type.tid]++;
+                }
+            }
+
 
             for (var i = 0, len = databases.length; i < len; i++){
                 databases[i].subjects.map(processFacetsSubj);
@@ -214,25 +234,7 @@ angular.module('ualib.databases')
             });
         }
 
-        function processFacetsSubj(subj){
-            if (subjAvail.indexOf(subj.sid) == -1){
-                subjAvail.push(subj.sid);
-                subjCount[subj.sid] = 1;
-            }
-            else{
-                subjCount[subj.sid]++;
-            }
-        }
 
-        function processFacetsType(type){
-            if (typeAvail.indexOf(type.tid) == -1){
-                typeAvail.push(type.tid);
-                typeCount[type.tid] = 1;
-            }
-            else{
-                typeCount[type.tid]++;
-            }
-        }
 
         function processStartsWith(databases){
             $scope.startsWithDisabled = {};
