@@ -69,6 +69,7 @@ angular.module('ualib.databases')
         });
 
         $scope.$on('$locationChangeSuccess', function(){
+            console.log('wut?');
             paramsToScope();
         });
 
@@ -107,7 +108,7 @@ angular.module('ualib.databases')
             $scope.filteredDB = filtered;
             updatePager();
 
-            var newParams = angular.extend({}, newVal, {page: $scope.pager.page});
+            var newParams = angular.extend({}, newVal);
 
             processFacets(filtered);
             scopeToParams(newParams);

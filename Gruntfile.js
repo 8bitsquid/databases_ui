@@ -155,11 +155,11 @@ module.exports = function(grunt){
             },
             ng: {
                 files: ['src/**/*.js', 'src/**/*.tpl.html'],
-                tasks: ['html2js', 'jshint', 'concat', 'clean', 'ngdocs']
+                tasks: ['html2js', 'jshint', 'concat:dist', 'clean', 'ngdocs']
             },
             index: {
                 files: ['src/index.html'],
-                tasks: ['concat', 'dev_prod_switch:dev']
+                tasks: ['concat:index', 'dev_prod_switch:dev']
             },
             livereload: {
                 // Here we watch the files the sass task will compile to
