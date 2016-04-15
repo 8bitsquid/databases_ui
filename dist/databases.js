@@ -8,7 +8,7 @@ angular.module("databases/databases-list.tpl.html", []).run(["$templateCache", f
     "            <div class=\"row\">\n" +
     "                <div class=\"col-sm-12\">\n" +
     "                    <ol class=\"breadcrumb\" typeof=\"BreadcrumbList\" vocab=\"http://schema.org/\">\n" +
-    "                        <li><a title=\"Go to The University of Alabama Libraries.\" href=\"/\" class=\"home\">The University of Alabama Libraries</a></li>\n" +
+    "                        <li><a title=\"Go to The University of Alabama Libraries.\" href=\"/#/home\" class=\"home\">The University of Alabama Libraries</a></li>\n" +
     "                        <li><a title=\"Go to News.\" href=\"/#/databases\" class=\"post post-page\">Databases</a></li>\n" +
     "                    </ol>\n" +
     "                </div>\n" +
