@@ -69,7 +69,6 @@ angular.module('ualib.databases')
         });
 
         $scope.$on('$locationChangeSuccess', function(){
-            console.log('wut?');
             paramsToScope();
         });
 
